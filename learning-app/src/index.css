@@ -1,0 +1,92 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  --color-primary: #3b82f6;
+  --color-primary-hover: #2563eb;
+  --color-secondary: #f59e0b;
+  --color-danger: #ef4444;
+  --color-success: #22c55e;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Code block styling */
+pre code {
+  display: block;
+  overflow-x: auto;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.dark pre code {
+  background: #1e293b;
+}
+
+:not(.dark) pre code {
+  background: #f1f5f9;
+  color: #334155;
+}
+
+/* Highlight.js theme overrides for dark */
+.dark .hljs-keyword,
+.dark .hljs-selector-tag { color: #c084fc; }
+.dark .hljs-string,
+.dark .hljs-attr { color: #86efac; }
+.dark .hljs-comment { color: #64748b; }
+.dark .hljs-number { color: #fbbf24; }
+.dark .hljs-function .hljs-title { color: #60a5fa; }
+
+/* Vulnerability content styling */
+.vuln-content ul {
+  list-style-type: disc;
+  padding-left: 1.5rem;
+  margin: 0.5rem 0;
+}
+.vuln-content ul li {
+  margin: 0.25rem 0;
+}
+.vuln-content p {
+  margin: 0.5rem 0;
+}
+.vuln-content a {
+  color: var(--color-primary);
+  text-decoration: underline;
+}
+.vuln-content strong {
+  font-weight: 600;
+}
+
+/* Skip to content link */
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  background: var(--color-primary);
+  color: white;
+  padding: 0.5rem 1rem;
+  z-index: 100;
+  transition: top 0.2s;
+}
+.skip-link:focus {
+  top: 0;
+}

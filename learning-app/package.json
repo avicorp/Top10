@@ -1,0 +1,36 @@
+{
+  "name": "owasp-top10-learning",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "predev": "tsx scripts/parse-content.ts && tsx scripts/generate-quizzes.ts",
+    "prebuild": "tsx scripts/parse-content.ts && tsx scripts/generate-quizzes.ts",
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-router-dom": "^7.1.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.0.0",
+    "@types/node": "^25.3.3",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "@vitejs/plugin-react": "^4.3.0",
+    "cheerio": "^1.0.0",
+    "rehype-highlight": "^7.0.0",
+    "rehype-stringify": "^10.0.0",
+    "remark-gfm": "^4.0.0",
+    "remark-parse": "^11.0.0",
+    "remark-rehype": "^11.0.0",
+    "tailwindcss": "^4.0.0",
+    "tsx": "^4.7.0",
+    "typescript": "^5.7.0",
+    "unified": "^11.0.0",
+    "vite": "^6.0.0"
+  }
+}

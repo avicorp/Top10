@@ -1,0 +1,1106 @@
+{
+  "version": "2017",
+  "vulnerabilities": [
+    {
+      "id": "A1",
+      "version": "2017",
+      "code": "A1:2017",
+      "title": "Injection",
+      "slug": "a1-2017-injection",
+      "rank": 1,
+      "iconPath": null,
+      "backgroundHtml": null,
+      "scoreData": null,
+      "riskRating": {
+        "exploitability": 3,
+        "prevalence": 2,
+        "detectability": 3,
+        "technical_impact": 3
+      },
+      "description": {
+        "html": "<p>An application is vulnerable to attack when:</p>\n<ul>\n<li>User-supplied data is not validated, filtered, or sanitized by the application.</li>\n<li>Dynamic queries or non-parameterized calls without context-aware escaping are used directly in the interpreter.</li>\n<li>Hostile data is used within object-relational mapping (ORM) search parameters to extract additional, sensitive records.</li>\n<li>Hostile data is directly used or concatenated, such that the SQL or command contains both structure and hostile data in dynamic queries, commands, or stored procedures.</li>\n<li>Some of the more common injections are SQL, NoSQL, OS command, Object Relational Mapping (ORM), LDAP, and Expression Language (EL) or Object Graph Navigation Library (OGNL) injection. The concept is identical among all interpreters. Source code review is the best method of detecting if applications are vulnerable to injections, closely followed by thorough automated testing of all parameters, headers, URL, cookies, JSON, SOAP, and XML data inputs. Organizations can include static source (<a href=\"https://wiki.owasp.org/index.php/Source_Code_Analysis_Tools\">SAST</a>) and dynamic application test (<a href=\"https://wiki.owasp.org/index.php/Category:Vulnerability_Scanning_Tools\">DAST</a>) tools into the CI/CD pipeline to identify newly introduced injection flaws prior to production deployment.</li>\n</ul>",
+        "plainText": "An application is vulnerable to attack when:\n\nUser-supplied data is not validated, filtered, or sanitized by the application.\nDynamic queries or non-parameterized calls without context-aware escaping are used directly in the interpreter.\nHostile data is used within object-relational mapping (ORM) search parameters to extract additional, sensitive records.\nHostile data is directly used or concatenated, such that the SQL or command contains both structure and hostile data in dynamic queries, commands, or stored procedures.\nSome of the more common injections are SQL, NoSQL, OS command, Object Relational Mapping (ORM), LDAP, and Expression Language (EL) or Object Graph Navigation Library (OGNL) injection. The concept is identical among all interpreters. Source code review is the best method of detecting if applications are vulnerable to injections, closely followed by thorough automated testing of all parameters, headers, URL, cookies, JSON, SOAP, and XML data inputs. Organizations can include static source (SAST) and dynamic application test (DAST) tools into the CI/CD pipeline to identify newly introduced injection flaws prior to production deployment."
+      },
+      "prevention": {
+        "html": "<p>Preventing injection requires keeping data separate from commands and queries.</p>\n<ul>\n<li>The preferred option is to use a safe API, which avoids the use of the interpreter entirely or provides a parameterized interface, or migrate to use Object Relational Mapping Tools (ORMs). <strong>Note</strong>: Even when parameterized, stored procedures can still introduce SQL injection if PL/SQL or T-SQL concatenates queries and data, or executes hostile data with EXECUTE IMMEDIATE or exec().</li>\n<li>Use positive or \"whitelist\" server-side input validation. This is not a complete defense as many applications require special characters, such as text areas or APIs for mobile applications.</li>\n<li>For any residual dynamic queries, escape special characters using the specific escape syntax for that interpreter. <strong>Note</strong>: SQL structure such as table names, column names, and so on cannot be escaped, and thus user-supplied structure names are dangerous. This is a common issue in report-writing software.</li>\n</ul>",
+        "plainText": "Preventing injection requires keeping data separate from commands and queries.\n\nThe preferred option is to use a safe API, which avoids the use of the interpreter entirely or provides a parameterized interface, or migrate to use Object Relational Mapping Tools (ORMs). Note: Even when parameterized, stored procedures can still introduce SQL injection if PL/SQL or T-SQL concatenates queries and data, or executes hostile data with EXECUTE IMMEDIATE or exec().\nUse positive or \"whitelist\" server-side input validation. This is not a complete defense as many applications require special characters, such as text areas or APIs for mobile applications.\nFor any residual dynamic queries, escape special characters using the specific escape syntax for that interpreter. Note: SQL structure such as table names, column names, and so on cannot be escaped, and thus user-supplied structure names are dangerous. This is a common issue in report-writing software."
+      },
+      "attackScenarios": [
+        {
+          "title": "Scenario #1",
+          "description": "An application uses untrusted data in the construction of the following vulnerable SQL call:",
+          "codeBlocks": [
+            {
+              "language": "text",
+              "code": "String query = \"SELECT * FROM accounts WHERE custID='\" + request.getParameter(\"id\") + \"'\";"
+            }
+          ]
+        },
+        {
+          "title": "Scenario #2",
+          "description": "Similarly, an application’s blind trust in frameworks may result in queries that are still vulnerable, (e.g. Hibernate Query Language (HQL)):\n\n\n\nIn both cases, the attacker modifies the ‘id’ parameter value in their browser to send:  ' UNION SELECT SLEEP(10);--. For example:\n\n\n\nThis changes the meaning of both queries to return all the records from the accounts table. More dangerous attacks could modify or delete data, or even invoke stored procedures.",
+          "codeBlocks": [
+            {
+              "language": "text",
+              "code": "Query HQLQuery = session.createQuery(\"FROM accounts WHERE custID='\" + request.getParameter(\"id\") + \"'\");"
+            },
+            {
+              "language": "text",
+              "code": "http://example.com/app/accountView?id=' UNION SELECT SLEEP(10);--"
+            }
+          ]
+        }
+      ],
+      "references": [
+        {
+          "title": "OWASP Proactive Controls: Parameterize Queries",
+          "url": "https://wiki.owasp.org/index.php/OWASP_Proactive_Controls#2:_Parameterize_Queries",
+          "category": "owasp"
+        },
+        {
+          "title": "OWASP ASVS: V5 Input Validation and Encoding",
+          "url": "https://wiki.owasp.org/index.php/ASVS_V5_Input_validation_and_output_encoding",
+          "category": "owasp"
+        },
+        {
+          "title": "OWASP Testing Guide: SQL Injection",
+          "url": "https://wiki.owasp.org/index.php/Testing_for_SQL_Injection_(OTG-INPVAL-005",
+          "category": "owasp"
+        },
+        {
+          "title": "OWASP Cheat Sheet: Injection Prevention",
+          "url": "https://wiki.owasp.org/index.php/Injection_Prevention_Cheat_Sheet",
+          "category": "owasp"
+        },
+        {
+          "title": "OWASP Cheat Sheet: SQL Injection Prevention",
+          "url": "https://wiki.owasp.org/index.php/SQL_Injection_Prevention_Cheat_Sheet",
+          "category": "owasp"
+        },
+        {
+          "title": "OWASP Cheat Sheet: Injection Prevention in Java",
+          "url": "https://wiki.owasp.org/index.php/Injection_Prevention_Cheat_Sheet_in_Java",
+          "category": "owasp"
+        },
+        {
+          "title": "OWASP Cheat Sheet: Query Parameterization",
+          "url": "https://wiki.owasp.org/index.php/Query_Parameterization_Cheat_Sheet",
+          "category": "owasp"
+        },
+        {
+          "title": "OWASP Automated Threats to Web Applications – OAT-014",
+          "url": "https://wiki.owasp.org/index.php/OWASP_Automated_Threats_to_Web_Applications",
+          "category": "owasp"
+        },
+        {
+          "title": "CWE-77: Command Injection",
+          "url": "https://cwe.mitre.org/data/definitions/77.html",
+          "category": "external"
+        },
+        {
+          "title": "CWE-89: SQL Injection",
+          "url": "https://cwe.mitre.org/data/definitions/89.html",
+          "category": "external"
+        },
+        {
+          "title": "CWE-564: Hibernate Injection",
+          "url": "https://cwe.mitre.org/data/definitions/564.html",
+          "category": "external"
+        },
+        {
+          "title": "CWE-917: Expression Language Injection",
+          "url": "https://cwe.mitre.org/data/definitions/917.html",
+          "category": "external"
+        },
+        {
+          "title": "PortSwigger: Server-side template injection",
+          "url": "https://portswigger.net/kb/issues/00101080_serversidetemplateinjection",
+          "category": "external"
+        }
+      ],
+      "cweMappings": [
+        {
+          "id": 77,
+          "name": "Command Injection",
+          "url": "https://cwe.mitre.org/data/definitions/77.html"
+        },
+        {
+          "id": 89,
+          "name": "SQL Injection",
+          "url": "https://cwe.mitre.org/data/definitions/89.html"
+        },
+        {
+          "id": 564,
+          "name": "Hibernate Injection",
+          "url": "https://cwe.mitre.org/data/definitions/564.html"
+        },
+        {
+          "id": 917,
+          "name": "Expression Language Injection",
+          "url": "https://cwe.mitre.org/data/definitions/917.html"
+        }
+      ]
+    },
+    {
+      "id": "A2",
+      "version": "2017",
+      "code": "A2:2017",
+      "title": "Broken Authentication",
+      "slug": "a2-2017-broken-authentication",
+      "rank": 2,
+      "iconPath": null,
+      "backgroundHtml": null,
+      "scoreData": null,
+      "riskRating": {
+        "exploitability": 3,
+        "prevalence": 2,
+        "detectability": 2,
+        "technical_impact": 3
+      },
+      "description": {
+        "html": "<p>Confirmation of the user's identity, authentication, and session management are critical to protect against authentication-related attacks.</p>\n<p>There may be authentication weaknesses if the application:</p>\n<ul>\n<li>Permits automated attacks such as <a href=\"https://wiki.owasp.org/index.php/Credential_stuffing\">credential stuffing</a>, where the attacker has a list of valid usernames and passwords.</li>\n<li>Permits brute force or other automated attacks.</li>\n<li>Permits default, weak, or well-known passwords, such as \"Password1\" or \"admin/admin“.</li>\n<li>Uses weak or ineffective credential recovery and forgot-password processes, such as \"knowledge-based answers\", which cannot be made safe.</li>\n<li>Uses plain text, encrypted, or weakly hashed passwords (see <strong>A3:2017-Sensitive Data Exposure</strong>).</li>\n<li>Has missing or ineffective multi-factor authentication.</li>\n<li>Exposes Session IDs in the URL (e.g., URL rewriting).</li>\n<li>Does not rotate Session IDs after successful login.</li>\n<li>Does not properly invalidate Session IDs. User sessions or authentication tokens (particularly single sign-on (SSO) tokens) aren't properly invalidated during logout or a period of inactivity.</li>\n</ul>",
+        "plainText": "Confirmation of the user's identity, authentication, and session management are critical to protect against authentication-related attacks.\nThere may be authentication weaknesses if the application:\n\nPermits automated attacks such as credential stuffing, where the attacker has a list of valid usernames and passwords.\nPermits brute force or other automated attacks.\nPermits default, weak, or well-known passwords, such as \"Password1\" or \"admin/admin“.\nUses weak or ineffective credential recovery and forgot-password processes, such as \"knowledge-based answers\", which cannot be made safe.\nUses plain text, encrypted, or weakly hashed passwords (see A3:2017-Sensitive Data Exposure).\nHas missing or ineffective multi-factor authentication.\nExposes Session IDs in the URL (e.g., URL rewriting).\nDoes not rotate Session IDs after successful login.\nDoes not properly invalidate Session IDs. User sessions or authentication tokens (particularly single sign-on (SSO) tokens) aren't properly invalidated during logout or a period of inactivity."
+      },
+      "prevention": {
+        "html": "<ul>\n<li>Where possible, implement multi-factor authentication to prevent automated, credential stuffing, brute force, and stolen credential re-use attacks.</li>\n<li>Do not ship or deploy with any default credentials, particularly for admin users.</li>\n<li>Implement weak-password checks, such as testing new or changed passwords against a list of the <a href=\"https://github.com/danielmiessler/SecLists/tree/master/Passwords\">top 10000 worst passwords</a>.</li>\n<li>Align password length, complexity and rotation policies with <a href=\"https://pages.nist.gov/800-63-3/sp800-63b.html#memsecret\">NIST 800-63 B's guidelines in section 5.1.1 for Memorized Secrets</a> or other modern, evidence based password policies.</li>\n<li>Ensure registration, credential recovery, and API pathways are hardened against account enumeration attacks by using the same messages for all outcomes.</li>\n<li>Limit or increasingly delay failed login attempts. Log all failures and alert administrators when credential stuffing, brute force, or other attacks are detected.</li>\n<li>Use a server-side, secure, built-in session manager that generates a new random session ID with high entropy after login. Session IDs should not be in the URL, be securely stored and invalidated after logout, idle, and absolute timeouts.</li>\n</ul>",
+        "plainText": "Where possible, implement multi-factor authentication to prevent automated, credential stuffing, brute force, and stolen credential re-use attacks.\nDo not ship or deploy with any default credentials, particularly for admin users.\nImplement weak-password checks, such as testing new or changed passwords against a list of the top 10000 worst passwords.\nAlign password length, complexity and rotation policies with NIST 800-63 B's guidelines in section 5.1.1 for Memorized Secrets or other modern, evidence based password policies.\nEnsure registration, credential recovery, and API pathways are hardened against account enumeration attacks by using the same messages for all outcomes.\nLimit or increasingly delay failed login attempts. Log all failures and alert administrators when credential stuffing, brute force, or other attacks are detected.\nUse a server-side, secure, built-in session manager that generates a new random session ID with high entropy after login. Session IDs should not be in the URL, be securely stored and invalidated after logout, idle, and absolute timeouts."
+      },
+      "attackScenarios": [
+        {
+          "title": "Scenario #1",
+          "description": "Most authentication attacks occur due to the continued use of passwords as a sole factor. Once considered best practices, password rotation and complexity requirements are viewed as encouraging users to use, and reuse, weak passwords. Organizations are recommended to stop these practices per NIST 800-63 and use multi-factor authentication.",
+          "codeBlocks": []
+        },
+        {
+          "title": "Scenario #2",
+          "description": "Application session timeouts aren't set properly. A user uses a public computer to access an application. Instead of selecting “logout” the user simply closes the browser tab and walks away. An attacker uses the same browser an hour later, and the user is still authenticated.",
+          "codeBlocks": []
+        }
+      ],
+      "references": [
+        {
+          "title": "OWASP Proactive Controls: Implement Identity and Authentication Controls",
+          "url": "https://wiki.owasp.org/index.php/OWASP_Proactive_Controls#5:_Implement_Identity_and_Authentication_Controls",
+          "category": "owasp"
+        },
+        {
+          "title": "OWASP Application Security Verification Standard: V2 Authentication",
+          "url": "https://wiki.owasp.org/index.php/Category:OWASP_Application_Security_Verification_Standard_Project#tab=Home",
+          "category": "owasp"
+        },
+        {
+          "title": "OWASP Application Security Verification Standard: V3 Session Management",
+          "url": "https://wiki.owasp.org/index.php/Category:OWASP_Application_Security_Verification_Standard_Project#tab=Home",
+          "category": "owasp"
+        },
+        {
+          "title": "OWASP Testing Guide: Identity",
+          "url": "https://wiki.owasp.org/index.php/Testing_Identity_Management",
+          "category": "owasp"
+        },
+        {
+          "title": "Authentication",
+          "url": "https://wiki.owasp.org/index.php/Testing_for_authentication",
+          "category": "owasp"
+        },
+        {
+          "title": "OWASP Cheat Sheet: Authentication",
+          "url": "https://wiki.owasp.org/index.php/Authentication_Cheat_Sheet",
+          "category": "owasp"
+        },
+        {
+          "title": "OWASP Cheat Sheet: Credential Stuffing",
+          "url": "https://wiki.owasp.org/index.php/Credential_Stuffing_Prevention_Cheat_Sheet",
+          "category": "owasp"
+        },
+        {
+          "title": "OWASP Cheat Sheet: Forgot Password",
+          "url": "https://wiki.owasp.org/index.php/Forgot_Password_Cheat_Sheet",
+          "category": "owasp"
+        },
+        {
+          "title": "OWASP Cheat Sheet: Session Management",
+          "url": "https://wiki.owasp.org/index.php/Session_Management_Cheat_Sheet",
+          "category": "owasp"
+        },
+        {
+          "title": "OWASP Automated Threats Handbook",
+          "url": "https://wiki.owasp.org/index.php/OWASP_Automated_Threats_to_Web_Applications",
+          "category": "owasp"
+        },
+        {
+          "title": "NIST 800-63b: 5.1.1 Memorized Secrets",
+          "url": "https://pages.nist.gov/800-63-3/sp800-63b.html#memsecret",
+          "category": "external"
+        },
+        {
+          "title": "CWE-287: Improper Authentication",
+          "url": "https://cwe.mitre.org/data/definitions/287.html",
+          "category": "external"
+        },
+        {
+          "title": "CWE-384: Session Fixation",
+          "url": "https://cwe.mitre.org/data/definitions/384.html",
+          "category": "external"
+        }
+      ],
+      "cweMappings": [
+        {
+          "id": 287,
+          "name": "Improper Authentication",
+          "url": "https://cwe.mitre.org/data/definitions/287.html"
+        },
+        {
+          "id": 384,
+          "name": "Session Fixation",
+          "url": "https://cwe.mitre.org/data/definitions/384.html"
+        }
+      ]
+    },
+    {
+      "id": "A3",
+      "version": "2017",
+      "code": "A3:2017",
+      "title": "Sensitive Data Exposure",
+      "slug": "a3-2017-sensitive-data-exposure",
+      "rank": 3,
+      "iconPath": null,
+      "backgroundHtml": null,
+      "scoreData": null,
+      "riskRating": {
+        "exploitability": 2,
+        "prevalence": 3,
+        "detectability": 2,
+        "technical_impact": 3
+      },
+      "description": {
+        "html": "<p>The first thing is to determine the protection needs of data in transit and at rest. For example, passwords, credit card numbers, health records, personal information and business secrets require extra protection, particularly if that data falls under privacy laws, e.g. EU's General Data Protection Regulation (GDPR), or regulations, e.g. financial data protection such as PCI Data Security Standard (PCI DSS). For all such data:</p>\n<ul>\n<li>Is any data transmitted in clear text? This concerns protocols such as HTTP, SMTP, and FTP. External internet traffic is especially dangerous. Verify all internal traffic e.g. between load balancers, web servers, or back-end systems.</li>\n<li>Are any old or weak cryptographic algorithms used either by default or in older code?</li>\n<li>Are default crypto keys in use, weak crypto keys generated or re-used, or is proper key management or rotation missing?</li>\n<li>Is encryption not enforced, e.g. are any user agent (browser) security directives or headers missing?</li>\n<li>Does the user agent (e.g. app, mail client) not verify if the received server certificate is valid?</li>\n</ul>\n<p>See ASVS <a href=\"https://wiki.owasp.org/index.php/ASVS_V7_Cryptography\">Crypto (V7)</a>, <a href=\"https://wiki.owasp.org/index.php/ASVS_V9_Data_Protection\">Data Protection (V9)</a> and <a href=\"https://wiki.owasp.org/index.php/ASVS_V10_Communications\">SSL/TLS (V10)</a>.</p>",
+        "plainText": "The first thing is to determine the protection needs of data in transit and at rest. For example, passwords, credit card numbers, health records, personal information and business secrets require extra protection, particularly if that data falls under privacy laws, e.g. EU's General Data Protection Regulation (GDPR), or regulations, e.g. financial data protection such as PCI Data Security Standard (PCI DSS). For all such data:\n\nIs any data transmitted in clear text? This concerns protocols such as HTTP, SMTP, and FTP. External internet traffic is especially dangerous. Verify all internal traffic e.g. between load balancers, web servers, or back-end systems.\nAre any old or weak cryptographic algorithms used either by default or in older code?\nAre default crypto keys in use, weak crypto keys generated or re-used, or is proper key management or rotation missing?\nIs encryption not enforced, e.g. are any user agent (browser) security directives or headers missing?\nDoes the user agent (e.g. app, mail client) not verify if the received server certificate is valid?\n\nSee ASVS Crypto (V7), Data Protection (V9) and SSL/TLS (V10)."
+      },
+      "prevention": {
+        "html": "<p>Do the following, at a minimum, and consult the references:</p>\n<ul>\n<li>Classify data processed, stored or transmitted by an application. Identify which data is sensitive according to privacy laws, regulatory requirements, or business needs.</li>\n<li>Apply controls as per the classification.</li>\n<li>Don't store sensitive data unnecessarily. Discard it as soon as possible or use PCI DSS compliant tokenization or even truncation. Data that is not retained cannot be stolen.</li>\n<li>Make sure to encrypt all sensitive data at rest.</li>\n<li>Ensure up-to-date and strong standard algorithms, protocols, and keys are in place; use proper key management.</li>\n<li>Encrypt all data in transit with secure protocols such as TLS with perfect forward secrecy (PFS) ciphers, cipher prioritization by the server, and secure parameters. Enforce encryption using directives like HTTP Strict Transport Security (HSTS).</li>\n<li>Disable caching for response that contain sensitive data.</li>\n<li>Store passwords using strong adaptive and salted hashing functions with a work factor (delay factor), such as <a href=\"https://www.cryptolux.org/index.php/Argon2\">Argon2</a>, <a href=\"https://wikipedia.org/wiki/Scrypt\">scrypt</a>, <a href=\"https://wikipedia.org/wiki/Bcrypt\">bcrypt</a> or <a href=\"https://wikipedia.org/wiki/PBKDF2\">PBKDF2</a>.</li>\n<li>Verify independently the effectiveness of configuration and settings.</li>\n</ul>",
+        "plainText": "Do the following, at a minimum, and consult the references:\n\nClassify data processed, stored or transmitted by an application. Identify which data is sensitive according to privacy laws, regulatory requirements, or business needs.\nApply controls as per the classification.\nDon't store sensitive data unnecessarily. Discard it as soon as possible or use PCI DSS compliant tokenization or even truncation. Data that is not retained cannot be stolen.\nMake sure to encrypt all sensitive data at rest.\nEnsure up-to-date and strong standard algorithms, protocols, and keys are in place; use proper key management.\nEncrypt all data in transit with secure protocols such as TLS with perfect forward secrecy (PFS) ciphers, cipher prioritization by the server, and secure parameters. Enforce encryption using directives like HTTP Strict Transport Security (HSTS).\nDisable caching for response that contain sensitive data.\nStore passwords using strong adaptive and salted hashing functions with a work factor (delay factor), such as Argon2, scrypt, bcrypt or PBKDF2.\nVerify independently the effectiveness of configuration and settings."
+      },
+      "attackScenarios": [
+        {
+          "title": "Scenario #1",
+          "description": "An application encrypts credit card numbers in a database using automatic database encryption. However, this data is automatically decrypted when retrieved, allowing an SQL injection flaw to retrieve credit card numbers in clear text.",
+          "codeBlocks": []
+        },
+        {
+          "title": "Scenario #2",
+          "description": "A site doesn't use or enforce TLS for all pages or supports weak encryption. An attacker monitors network traffic  (e.g. at an insecure wireless network), downgrades connections from HTTPS to HTTP, intercepts requests, and steals the user's session cookie. The attacker then replays this cookie and hijacks the user's (authenticated) session, accessing or modifying the user's private data. Instead of the above they could alter all transported data, e.g. the recipient of a money transfer.",
+          "codeBlocks": []
+        },
+        {
+          "title": "Scenario #3",
+          "description": "The password database uses unsalted or simple hashes to store everyone's passwords. A file upload flaw allows an attacker to retrieve the password database. All the unsalted hashes can be exposed with a rainbow table of pre-calculated hashes. Hashes generated by simple or fast hash functions may be cracked by GPUs, even if they were salted.",
+          "codeBlocks": []
+        }
+      ],
+      "references": [
+        {
+          "title": "OWASP Proactive Controls: Protect Data",
+          "url": "https://wiki.owasp.org/index.php/OWASP_Proactive_Controls#7:_Protect_Data",
+          "category": "owasp"
+        },
+        {
+          "title": "OWASP Application Security Verification Standard",
+          "url": "(https://wiki.owasp.org/index.php/Category:OWASP_Application_Security_Verification_Standard_Project",
+          "category": "owasp"
+        },
+        {
+          "title": "OWASP Cheat Sheet: Transport Layer Protection",
+          "url": "https://wiki.owasp.org/index.php/Transport_Layer_Protection_Cheat_Sheet",
+          "category": "owasp"
+        },
+        {
+          "title": "OWASP Cheat Sheet: User Privacy Protection",
+          "url": "https://wiki.owasp.org/index.php/User_Privacy_Protection_Cheat_Sheet",
+          "category": "owasp"
+        },
+        {
+          "title": "OWASP Cheat Sheet: Password",
+          "url": "https://wiki.owasp.org/index.php/Password_Storage_Cheat_Sheet",
+          "category": "owasp"
+        },
+        {
+          "title": "OWASP Security Headers Project",
+          "url": "https://wiki.owasp.org/index.php/OWASP_Secure_Headers_Project",
+          "category": "owasp"
+        },
+        {
+          "title": "OWASP Testing Guide: Testing for weak cryptography",
+          "url": "https://wiki.owasp.org/index.php/Testing_for_weak_Cryptography",
+          "category": "owasp"
+        },
+        {
+          "title": "CWE-220: Exposure of sens. information through data queries",
+          "url": "https://cwe.mitre.org/data/definitions/220.html",
+          "category": "external"
+        },
+        {
+          "title": "CWE-310: Cryptographic Issues",
+          "url": "https://cwe.mitre.org/data/definitions/310.html",
+          "category": "external"
+        },
+        {
+          "title": "CWE-312: Cleartext Storage of Sensitive Information",
+          "url": "https://cwe.mitre.org/data/definitions/312.html",
+          "category": "external"
+        },
+        {
+          "title": "CWE-319: Cleartext Transmission of Sensitive Information",
+          "url": "https://cwe.mitre.org/data/definitions/319.html",
+          "category": "external"
+        },
+        {
+          "title": "CWE-326: Weak Encryption",
+          "url": "https://cwe.mitre.org/data/definitions/326.html",
+          "category": "external"
+        },
+        {
+          "title": "CWE-359: Exposure of Private Information - Privacy Violation",
+          "url": "https://cwe.mitre.org/data/definitions/359.html",
+          "category": "external"
+        }
+      ],
+      "cweMappings": [
+        {
+          "id": 220,
+          "name": "Exposure of sens. information through data queries",
+          "url": "https://cwe.mitre.org/data/definitions/220.html"
+        },
+        {
+          "id": 310,
+          "name": "Cryptographic Issues",
+          "url": "https://cwe.mitre.org/data/definitions/310.html"
+        },
+        {
+          "id": 312,
+          "name": "Cleartext Storage of Sensitive Information",
+          "url": "https://cwe.mitre.org/data/definitions/312.html"
+        },
+        {
+          "id": 319,
+          "name": "Cleartext Transmission of Sensitive Information",
+          "url": "https://cwe.mitre.org/data/definitions/319.html"
+        },
+        {
+          "id": 326,
+          "name": "Weak Encryption",
+          "url": "https://cwe.mitre.org/data/definitions/326.html"
+        },
+        {
+          "id": 359,
+          "name": "Exposure of Private Information - Privacy Violation",
+          "url": "https://cwe.mitre.org/data/definitions/359.html"
+        }
+      ]
+    },
+    {
+      "id": "A4",
+      "version": "2017",
+      "code": "A4:2017",
+      "title": "XML External Entities (XXE)",
+      "slug": "a4-2017-xml-external-entities-xxe",
+      "rank": 4,
+      "iconPath": null,
+      "backgroundHtml": null,
+      "scoreData": null,
+      "riskRating": {
+        "exploitability": 2,
+        "prevalence": 2,
+        "detectability": 3,
+        "technical_impact": 3
+      },
+      "description": {
+        "html": "<p>Applications and in particular XML-based web services or downstream integrations might be vulnerable to attack if:</p>\n<ul>\n<li>The application accepts XML directly or XML uploads, especially from untrusted sources, or inserts untrusted data into XML documents, which is then parsed by an XML processor.</li>\n<li>Any of the XML processors in the application or SOAP based web services has <a href=\"https://en.wikipedia.org/wiki/Document_type_definition\">document type definitions (DTDs)</a> enabled. As the exact mechanism for disabling DTD processing varies by processor, it is good practice to consult a reference such as the <a href=\"https://wiki.owasp.org/index.php/XML_External_Entity_(XXE)_Prevention_Cheat_Sheet\">OWASP Cheat Sheet 'XXE Prevention'</a>.</li>\n<li>If the application uses SAML for identity processing within federated security or single sign on (SSO) purposes. SAML uses XML for identity assertions, and may be vulnerable.</li>\n<li>If the application uses SOAP prior to version 1.2, it is likely susceptible to XXE attacks if XML entities are being passed to the SOAP framework.</li>\n<li>Being vulnerable to XXE attacks likely means that the application is vulnerable to denial of service attacks including the Billion Laughs attack</li>\n</ul>",
+        "plainText": "Applications and in particular XML-based web services or downstream integrations might be vulnerable to attack if:\n\nThe application accepts XML directly or XML uploads, especially from untrusted sources, or inserts untrusted data into XML documents, which is then parsed by an XML processor.\nAny of the XML processors in the application or SOAP based web services has document type definitions (DTDs) enabled. As the exact mechanism for disabling DTD processing varies by processor, it is good practice to consult a reference such as the OWASP Cheat Sheet 'XXE Prevention'.\nIf the application uses SAML for identity processing within federated security or single sign on (SSO) purposes. SAML uses XML for identity assertions, and may be vulnerable.\nIf the application uses SOAP prior to version 1.2, it is likely susceptible to XXE attacks if XML entities are being passed to the SOAP framework.\nBeing vulnerable to XXE attacks likely means that the application is vulnerable to denial of service attacks including the Billion Laughs attack"
+      },
+      "prevention": {
+        "html": "<p>Developer training is essential to identify and mitigate XXE. Besides that, preventing XXE requires:</p>\n<ul>\n<li>Whenever possible, use less complex data formats such as JSON, and avoiding serialization of sensitive data.</li>\n<li>Patch or upgrade all XML processors and libraries in use by the application or on the underlying operating system. Use dependency checkers. Update SOAP to SOAP 1.2 or higher.</li>\n<li>Disable XML external entity and DTD processing in all XML parsers in the application, as per the <a href=\"https://wiki.owasp.org/index.php/XML_External_Entity_(XXE)_Prevention_Cheat_Sheet\">OWASP Cheat Sheet 'XXE Prevention'</a>.</li>\n<li>Implement positive (\"whitelisting\") server-side input validation, filtering, or sanitization to prevent hostile data within XML documents, headers, or nodes.</li>\n<li>Verify that XML or XSL file upload functionality validates incoming XML using XSD validation or similar.</li>\n<li>SAST tools can help detect XXE in source code, although manual code review is the best alternative in large, complex applications with many integrations.</li>\n</ul>\n<p>If these controls are not possible, consider using virtual patching, API security gateways, or Web Application Firewalls (WAFs) to detect, monitor, and block XXE attacks.</p>",
+        "plainText": "Developer training is essential to identify and mitigate XXE. Besides that, preventing XXE requires:\n\nWhenever possible, use less complex data formats such as JSON, and avoiding serialization of sensitive data.\nPatch or upgrade all XML processors and libraries in use by the application or on the underlying operating system. Use dependency checkers. Update SOAP to SOAP 1.2 or higher.\nDisable XML external entity and DTD processing in all XML parsers in the application, as per the OWASP Cheat Sheet 'XXE Prevention'.\nImplement positive (\"whitelisting\") server-side input validation, filtering, or sanitization to prevent hostile data within XML documents, headers, or nodes.\nVerify that XML or XSL file upload functionality validates incoming XML using XSD validation or similar.\nSAST tools can help detect XXE in source code, although manual code review is the best alternative in large, complex applications with many integrations.\n\nIf these controls are not possible, consider using virtual patching, API security gateways, or Web Application Firewalls (WAFs) to detect, monitor, and block XXE attacks."
+      },
+      "attackScenarios": [
+        {
+          "title": "Scenario #1",
+          "description": "The attacker attempts to extract data from the server:",
+          "codeBlocks": [
+            {
+              "language": "text",
+              "code": "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n    <!DOCTYPE foo [\n    <!ELEMENT foo ANY >\n    <!ENTITY xxe SYSTEM \"file:///etc/passwd\" >]>\n    <foo>&xxe;</foo>"
+            }
+          ]
+        },
+        {
+          "title": "Scenario #2",
+          "description": "An attacker probes the server's private network by changing the above ENTITY line to:",
+          "codeBlocks": [
+            {
+              "language": "text",
+              "code": "<!ENTITY xxe SYSTEM \"https://192.168.1.1/private\" >]>"
+            }
+          ]
+        },
+        {
+          "title": "Scenario #3",
+          "description": "An attacker attempts a denial-of-service attack by including a potentially endless file:",
+          "codeBlocks": [
+            {
+              "language": "text",
+              "code": "<!ENTITY xxe SYSTEM \"file:///dev/random\" >]>"
+            }
+          ]
+        }
+      ],
+      "references": [
+        {
+          "title": "OWASP Application Security Verification Standard",
+          "url": "https://wiki.owasp.org/index.php/Category:OWASP_Application_Security_Verification_Standard_Project#tab=Home",
+          "category": "owasp"
+        },
+        {
+          "title": "OWASP Testing Guide: Testing for XML Injection",
+          "url": "https://wiki.owasp.org/index.php/Testing_for_XML_Injection_(OTG-INPVAL-008",
+          "category": "owasp"
+        },
+        {
+          "title": "OWASP XXE Vulnerability",
+          "url": "https://wiki.owasp.org/index.php/XML_External_Entity_(XXE",
+          "category": "owasp"
+        },
+        {
+          "title": "OWASP Cheat Sheet: XXE Prevention",
+          "url": "https://wiki.owasp.org/index.php/XML_External_Entity_(XXE",
+          "category": "owasp"
+        },
+        {
+          "title": "OWASP Cheat Sheet: XML Security",
+          "url": "https://wiki.owasp.org/index.php/XML_Security_Cheat_Sheet",
+          "category": "owasp"
+        },
+        {
+          "title": "CWE-611: Improper Restriction of XXE",
+          "url": "https://cwe.mitre.org/data/definitions/611.html",
+          "category": "external"
+        },
+        {
+          "title": "Billion Laughs Attack",
+          "url": "https://en.wikipedia.org/wiki/Billion_laughs_attack",
+          "category": "external"
+        },
+        {
+          "title": "SAML Security XML External Entity Attack",
+          "url": "https://secretsofappsecurity.blogspot.tw/2017/01/saml-security-xml-external-entity-attack.html",
+          "category": "external"
+        },
+        {
+          "title": "Detecting and exploiting XXE in SAML Interfaces",
+          "url": "https://web-in-security.blogspot.tw/2014/11/detecting-and-exploiting-xxe-in-saml.html",
+          "category": "external"
+        }
+      ],
+      "cweMappings": [
+        {
+          "id": 611,
+          "name": "Improper Restriction of XXE",
+          "url": "https://cwe.mitre.org/data/definitions/611.html"
+        }
+      ]
+    },
+    {
+      "id": "A5",
+      "version": "2017",
+      "code": "A5:2017",
+      "title": "Broken Access Control",
+      "slug": "a5-2017-broken-access-control",
+      "rank": 5,
+      "iconPath": null,
+      "backgroundHtml": null,
+      "scoreData": null,
+      "riskRating": {
+        "exploitability": 2,
+        "prevalence": 2,
+        "detectability": 2,
+        "technical_impact": 3
+      },
+      "description": {
+        "html": "<p>Access control enforces policy such that users cannot act outside of their intended permissions. Failures typically lead to unauthorized information disclosure, modification or destruction of all data, or performing a business function outside of the limits of the user. Common access control vulnerabilities include:</p>\n<ul>\n<li>Bypassing access control checks by modifying the URL, internal application state, or the HTML page, or simply using a custom API attack tool.</li>\n<li>Allowing the primary key to be changed to another's users record, permitting viewing or editing someone else's account.</li>\n<li>Elevation of privilege. Acting as a user without being logged in, or acting as an admin when logged in as a user.</li>\n<li>Metadata manipulation, such as replaying or tampering with a JSON Web Token (JWT) access control token or a cookie or hidden field manipulated to elevate privileges, or abusing JWT invalidation</li>\n<li>CORS misconfiguration allows unauthorized API access.</li>\n<li>Force browsing to authenticated pages as an unauthenticated user or to privileged pages as a standard user. Accessing API with missing access controls for POST, PUT and DELETE.</li>\n</ul>",
+        "plainText": "Access control enforces policy such that users cannot act outside of their intended permissions. Failures typically lead to unauthorized information disclosure, modification or destruction of all data, or performing a business function outside of the limits of the user. Common access control vulnerabilities include:\n\nBypassing access control checks by modifying the URL, internal application state, or the HTML page, or simply using a custom API attack tool.\nAllowing the primary key to be changed to another's users record, permitting viewing or editing someone else's account.\nElevation of privilege. Acting as a user without being logged in, or acting as an admin when logged in as a user.\nMetadata manipulation, such as replaying or tampering with a JSON Web Token (JWT) access control token or a cookie or hidden field manipulated to elevate privileges, or abusing JWT invalidation\nCORS misconfiguration allows unauthorized API access.\nForce browsing to authenticated pages as an unauthenticated user or to privileged pages as a standard user. Accessing API with missing access controls for POST, PUT and DELETE."
+      },
+      "prevention": {
+        "html": "<p>Access control is only effective if enforced in trusted server-side code or server-less API, where the attacker cannot modify the access control check or metadata.</p>\n<ul>\n<li>With the exception of public resources, deny by default.</li>\n<li>Implement access control mechanisms once and re-use them throughout the application, including minimizing CORS usage.</li>\n<li>Model access controls should enforce record ownership, rather than accepting that the user can create, read, update, or delete any record.</li>\n<li>Unique application business limit requirements should be enforced by domain models.</li>\n<li>Disable web server directory listing and ensure file metadata (e.g. .git) and backup files are not present within web roots.</li>\n<li>Log access control failures, alert admins when appropriate (e.g. repeated failures).</li>\n<li>Rate limit API and controller access to minimize the harm from automated attack tooling.</li>\n<li>JWT tokens should be invalidated on the server after logout.</li>\n<li>Developers and QA staff should include functional access control unit and integration tests.</li>\n</ul>",
+        "plainText": "Access control is only effective if enforced in trusted server-side code or server-less API, where the attacker cannot modify the access control check or metadata.\n\nWith the exception of public resources, deny by default.\nImplement access control mechanisms once and re-use them throughout the application, including minimizing CORS usage.\nModel access controls should enforce record ownership, rather than accepting that the user can create, read, update, or delete any record.\nUnique application business limit requirements should be enforced by domain models.\nDisable web server directory listing and ensure file metadata (e.g. .git) and backup files are not present within web roots.\nLog access control failures, alert admins when appropriate (e.g. repeated failures).\nRate limit API and controller access to minimize the harm from automated attack tooling.\nJWT tokens should be invalidated on the server after logout.\nDevelopers and QA staff should include functional access control unit and integration tests."
+      },
+      "attackScenarios": [
+        {
+          "title": "Scenario #1",
+          "description": "The application uses unverified data in a SQL call that is accessing account information:\n\n\n\nAn attacker simply modifies the 'acct' parameter in the browser to send whatever account number they want. If not properly verified, the attacker can access any user's account.",
+          "codeBlocks": [
+            {
+              "language": "text",
+              "code": "pstmt.setString(1, request.getParameter(\"acct\"));\n  ResultSet results = pstmt.executeQuery();"
+            }
+          ]
+        },
+        {
+          "title": "Scenario #2",
+          "description": "An attacker simply force browses to target URLs. Admin rights are required for access to the admin page.\n\n\n\nIf an unauthenticated user can access either page, it’s a flaw. If a non-admin can access the admin page, this is a flaw.",
+          "codeBlocks": [
+            {
+              "language": "text",
+              "code": "http://example.com/app/getappInfo\n  http://example.com/app/admin_getappInfo"
+            }
+          ]
+        }
+      ],
+      "references": [
+        {
+          "title": "OWASP Proactive Controls: Access Controls",
+          "url": "https://wiki.owasp.org/index.php/OWASP_Proactive_Controls#6:_Implement_Access_Controls",
+          "category": "owasp"
+        },
+        {
+          "title": "OWASP Application Security Verification Standard: V4 Access Control",
+          "url": "https://wiki.owasp.org/index.php/Category:OWASP_Application_Security_Verification_Standard_Project#tab=Home",
+          "category": "owasp"
+        },
+        {
+          "title": "OWASP Testing Guide: Authorization Testing",
+          "url": "https://wiki.owasp.org/index.php/Testing_for_Authorization",
+          "category": "owasp"
+        },
+        {
+          "title": "OWASP Cheat Sheet: Access Control",
+          "url": "https://wiki.owasp.org/index.php/Access_Control_Cheat_Sheet",
+          "category": "owasp"
+        },
+        {
+          "title": "CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal')",
+          "url": "https://cwe.mitre.org/data/definitions/22.html",
+          "category": "external"
+        },
+        {
+          "title": "CWE-284: Improper Access Control (Authorization)",
+          "url": "https://cwe.mitre.org/data/definitions/284.html",
+          "category": "external"
+        },
+        {
+          "title": "CWE-285: Improper Authorization",
+          "url": "https://cwe.mitre.org/data/definitions/285.html",
+          "category": "external"
+        },
+        {
+          "title": "CWE-639: Authorization Bypass Through User-Controlled Key",
+          "url": "https://cwe.mitre.org/data/definitions/639.html",
+          "category": "external"
+        },
+        {
+          "title": "PortSwigger: Exploiting CORS misconfiguration",
+          "url": "https://portswigger.net/blog/exploiting-cors-misconfigurations-for-bitcoins-and-bounties",
+          "category": "external"
+        }
+      ],
+      "cweMappings": [
+        {
+          "id": 22,
+          "name": "Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal')",
+          "url": "https://cwe.mitre.org/data/definitions/22.html"
+        },
+        {
+          "id": 284,
+          "name": "Improper Access Control (Authorization)",
+          "url": "https://cwe.mitre.org/data/definitions/284.html"
+        },
+        {
+          "id": 285,
+          "name": "Improper Authorization",
+          "url": "https://cwe.mitre.org/data/definitions/285.html"
+        },
+        {
+          "id": 639,
+          "name": "Authorization Bypass Through User-Controlled Key",
+          "url": "https://cwe.mitre.org/data/definitions/639.html"
+        }
+      ]
+    },
+    {
+      "id": "A6",
+      "version": "2017",
+      "code": "A6:2017",
+      "title": "Security Misconfiguration",
+      "slug": "a6-2017-security-misconfiguration",
+      "rank": 6,
+      "iconPath": null,
+      "backgroundHtml": null,
+      "scoreData": null,
+      "riskRating": {
+        "exploitability": 3,
+        "prevalence": 3,
+        "detectability": 3,
+        "technical_impact": 2
+      },
+      "description": {
+        "html": "<p>The application might be vulnerable if the application is:</p>\n<ul>\n<li>Missing appropriate security hardening across any part of the application stack, or improperly configured permissions on cloud services.</li>\n<li>Unnecessary features are enabled or installed (e.g. unnecessary ports, services, pages, accounts, or privileges).</li>\n<li>Default accounts and their passwords still enabled and unchanged.</li>\n<li>Error handling reveals stack traces or other overly informative error messages to users.</li>\n<li>For upgraded systems, latest security features are disabled or not configured securely.</li>\n<li>The security settings in the application servers, application frameworks (e.g. Struts, Spring, ASP.NET), libraries, databases, etc. not set to secure values.</li>\n<li>The server does not send security headers or directives or they are not set to secure values.</li>\n<li>The software is out of date or vulnerable (see <strong>A9:2017-Using Components with Known Vulnerabilities</strong>).</li>\n</ul>\n<p>Without a concerted, repeatable application security configuration process, systems are at a higher risk.</p>",
+        "plainText": "The application might be vulnerable if the application is:\n\nMissing appropriate security hardening across any part of the application stack, or improperly configured permissions on cloud services.\nUnnecessary features are enabled or installed (e.g. unnecessary ports, services, pages, accounts, or privileges).\nDefault accounts and their passwords still enabled and unchanged.\nError handling reveals stack traces or other overly informative error messages to users.\nFor upgraded systems, latest security features are disabled or not configured securely.\nThe security settings in the application servers, application frameworks (e.g. Struts, Spring, ASP.NET), libraries, databases, etc. not set to secure values.\nThe server does not send security headers or directives or they are not set to secure values.\nThe software is out of date or vulnerable (see A9:2017-Using Components with Known Vulnerabilities).\n\nWithout a concerted, repeatable application security configuration process, systems are at a higher risk."
+      },
+      "prevention": {
+        "html": "<p>Secure installation processes should be implemented, including:</p>\n<ul>\n<li>A repeatable hardening process that makes it fast and easy to deploy another environment that is properly locked down. Development, QA, and production environments should all be configured identically, with different credentials used in each environment. This process should be automated to minimize the effort required to setup a new secure environment.</li>\n<li>A minimal platform without any unnecessary features, components, documentation, and samples. Remove or do not install unused features and frameworks.</li>\n<li>A task to review and update the configurations appropriate to all security notes, updates and patches as part of the patch management process (see <strong>A9:2017-Using Components with Known Vulnerabilities</strong>). In particular, review cloud storage permissions (e.g. S3 bucket permissions).</li>\n<li>A segmented application architecture that provides effective, secure separation between components or tenants, with segmentation, containerization, or cloud security groups (ACLs).</li>\n<li>Sending security directives to clients, e.g. <a href=\"https://wiki.owasp.org/index.php/OWASP_Secure_Headers_Project\">Security Headers</a>.</li>\n<li>An automated process to verify the effectiveness of the configurations and settings in all environments.</li>\n</ul>",
+        "plainText": "Secure installation processes should be implemented, including:\n\nA repeatable hardening process that makes it fast and easy to deploy another environment that is properly locked down. Development, QA, and production environments should all be configured identically, with different credentials used in each environment. This process should be automated to minimize the effort required to setup a new secure environment.\nA minimal platform without any unnecessary features, components, documentation, and samples. Remove or do not install unused features and frameworks.\nA task to review and update the configurations appropriate to all security notes, updates and patches as part of the patch management process (see A9:2017-Using Components with Known Vulnerabilities). In particular, review cloud storage permissions (e.g. S3 bucket permissions).\nA segmented application architecture that provides effective, secure separation between components or tenants, with segmentation, containerization, or cloud security groups (ACLs).\nSending security directives to clients, e.g. Security Headers.\nAn automated process to verify the effectiveness of the configurations and settings in all environments."
+      },
+      "attackScenarios": [
+        {
+          "title": "Scenario #1",
+          "description": "The application server comes with sample applications that are not removed from the production server. These sample applications have known security flaws attackers use to compromise the server. If one of these applications is the admin console, and default accounts weren't changed the attacker logs in with default passwords and takes over.",
+          "codeBlocks": []
+        },
+        {
+          "title": "Scenario #2",
+          "description": "Directory listing is not disabled on the server. An attacker discovers they can simply list directories. The attacker finds and downloads the compiled Java classes, which they decompile and reverse engineer to view the code. The attacker then finds a serious access control flaw in the application.",
+          "codeBlocks": []
+        },
+        {
+          "title": "Scenario #3",
+          "description": "The application server's configuration allows detailed error messages, e.g. stack traces, to be returned to users. This potentially exposes sensitive information or underlying flaws such as component versions that are known to be vulnerable.",
+          "codeBlocks": []
+        },
+        {
+          "title": "Scenario #4",
+          "description": "A cloud service provider has default sharing permissions open to the Internet by other CSP users. This allows sensitive data stored within cloud storage to be accessed.",
+          "codeBlocks": []
+        }
+      ],
+      "references": [
+        {
+          "title": "OWASP Testing Guide: Configuration Management",
+          "url": "https://wiki.owasp.org/index.php/Testing_for_configuration_management",
+          "category": "owasp"
+        },
+        {
+          "title": "OWASP Testing Guide: Testing for Error Codes",
+          "url": "https://wiki.owasp.org/index.php/Testing_for_Error_Code_(OWASP-IG-006",
+          "category": "owasp"
+        },
+        {
+          "title": "OWASP Security Headers Project",
+          "url": "https://wiki.owasp.org/index.php/OWASP_Secure_Headers_Project",
+          "category": "owasp"
+        },
+        {
+          "title": "V19 Configuration",
+          "url": "https://wiki.owasp.org/index.php/ASVS_V19_Configuration",
+          "category": "owasp"
+        },
+        {
+          "title": "NIST Guide to General Server Hardening",
+          "url": "https://csrc.nist.gov/publications/detail/sp/800-123/final",
+          "category": "external"
+        },
+        {
+          "title": "CWE-2: Environmental Security Flaws",
+          "url": "https://cwe.mitre.org/data/definitions/2.html",
+          "category": "external"
+        },
+        {
+          "title": "CWE-16: Configuration",
+          "url": "https://cwe.mitre.org/data/definitions/16.html",
+          "category": "external"
+        },
+        {
+          "title": "CWE-388: Error Handling",
+          "url": "https://cwe.mitre.org/data/definitions/388.html",
+          "category": "external"
+        },
+        {
+          "title": "CIS Security Configuration Guides/Benchmarks",
+          "url": "https://www.cisecurity.org/cis-benchmarks/",
+          "category": "external"
+        },
+        {
+          "title": "Amazon S3 Bucket Discovery and Enumeration",
+          "url": "https://blog.websecurify.com/2017/10/aws-s3-bucket-discovery.html",
+          "category": "external"
+        }
+      ],
+      "cweMappings": [
+        {
+          "id": 2,
+          "name": "Environmental Security Flaws",
+          "url": "https://cwe.mitre.org/data/definitions/2.html"
+        },
+        {
+          "id": 16,
+          "name": "Configuration",
+          "url": "https://cwe.mitre.org/data/definitions/16.html"
+        },
+        {
+          "id": 388,
+          "name": "Error Handling",
+          "url": "https://cwe.mitre.org/data/definitions/388.html"
+        }
+      ]
+    },
+    {
+      "id": "A7",
+      "version": "2017",
+      "code": "A7:2017",
+      "title": "Cross-Site Scripting (XSS)",
+      "slug": "a7-2017-cross-site-scripting-xss",
+      "rank": 7,
+      "iconPath": null,
+      "backgroundHtml": null,
+      "scoreData": null,
+      "riskRating": {
+        "exploitability": 3,
+        "prevalence": 3,
+        "detectability": 3,
+        "technical_impact": 2
+      },
+      "description": {
+        "html": "<p>There are three forms of XSS, usually targeting users' browsers:</p>\n<ul>\n<li><strong>Reflected XSS</strong>: The application or API includes unvalidated and unescaped user input as part of HTML output. A successful attack can allow the attacker to execute arbitrary HTML and JavaScript in the victim’s browser. Typically the user will need to interact with some malicious link that points to an attacker-controlled page, such as malicious watering hole websites, advertisements, or similar.</li>\n<li><strong>Stored XSS</strong>: The application or API stores unsanitized user input that is viewed at a later time by another user or an administrator. Stored XSS is often considered a high or critical risk.</li>\n<li><strong>DOM XSS</strong>: JavaScript frameworks, single-page applications, and APIs that dynamically include attacker-controllable data to a page are vulnerable to DOM XSS. Ideally, the application would not send attacker-controllable data to unsafe JavaScript APIs.</li>\n</ul>\n<p>Typical XSS attacks include session stealing, account takeover, MFA bypass, DOM node replacement or defacement (such as trojan login panels), attacks against the user's browser such as malicious software downloads, key logging, and other client-side attacks.</p>",
+        "plainText": "There are three forms of XSS, usually targeting users' browsers:\n\nReflected XSS: The application or API includes unvalidated and unescaped user input as part of HTML output. A successful attack can allow the attacker to execute arbitrary HTML and JavaScript in the victim’s browser. Typically the user will need to interact with some malicious link that points to an attacker-controlled page, such as malicious watering hole websites, advertisements, or similar.\nStored XSS: The application or API stores unsanitized user input that is viewed at a later time by another user or an administrator. Stored XSS is often considered a high or critical risk.\nDOM XSS: JavaScript frameworks, single-page applications, and APIs that dynamically include attacker-controllable data to a page are vulnerable to DOM XSS. Ideally, the application would not send attacker-controllable data to unsafe JavaScript APIs.\n\nTypical XSS attacks include session stealing, account takeover, MFA bypass, DOM node replacement or defacement (such as trojan login panels), attacks against the user's browser such as malicious software downloads, key logging, and other client-side attacks."
+      },
+      "prevention": {
+        "html": "<p>Preventing XSS requires separation of untrusted data from active browser content. This can be achieved by:</p>\n<ul>\n<li>Using frameworks that automatically escape XSS by design, such as the latest Ruby on Rails, React JS. Learn the limitations of each framework's XSS protection and appropriately handle the use cases which are not covered.</li>\n<li>Escaping untrusted HTTP request data based on the context in the HTML output (body, attribute, JavaScript, CSS, or URL) will resolve Reflected and Stored XSS vulnerabilities. The <a href=\"https://wiki.owasp.org/index.php/XSS_(Cross_Site_Scripting)_Prevention_Cheat_Sheet\">OWASP  Cheat Sheet 'XSS Prevention'</a> has details on the required data escaping techniques.</li>\n<li>Applying context-sensitive encoding when modifying the browser document on the client side acts against DOM XSS. When this cannot be avoided, similar context sensitive escaping techniques can be applied to browser APIs as described in the OWASP Cheat Sheet 'DOM based XSS Prevention'.</li>\n<li>Enabling a <a href=\"https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP\">Content Security Policy (CSP)</a> as a defense-in-depth mitigating control against XSS. It is effective if no other vulnerabilities exist that would allow placing malicious code via local file includes (e.g. path traversal overwrites or vulnerable libraries from permitted content delivery networks).</li>\n</ul>",
+        "plainText": "Preventing XSS requires separation of untrusted data from active browser content. This can be achieved by:\n\nUsing frameworks that automatically escape XSS by design, such as the latest Ruby on Rails, React JS. Learn the limitations of each framework's XSS protection and appropriately handle the use cases which are not covered.\nEscaping untrusted HTTP request data based on the context in the HTML output (body, attribute, JavaScript, CSS, or URL) will resolve Reflected and Stored XSS vulnerabilities. The OWASP  Cheat Sheet 'XSS Prevention' has details on the required data escaping techniques.\nApplying context-sensitive encoding when modifying the browser document on the client side acts against DOM XSS. When this cannot be avoided, similar context sensitive escaping techniques can be applied to browser APIs as described in the OWASP Cheat Sheet 'DOM based XSS Prevention'.\nEnabling a Content Security Policy (CSP) as a defense-in-depth mitigating control against XSS. It is effective if no other vulnerabilities exist that would allow placing malicious code via local file includes (e.g. path traversal overwrites or vulnerable libraries from permitted content delivery networks)."
+      },
+      "attackScenarios": [],
+      "references": [
+        {
+          "title": "OWASP Proactive Controls: Encode Data",
+          "url": "https://wiki.owasp.org/index.php/OWASP_Proactive_Controls#tab=OWASP_Proactive_Controls_2016",
+          "category": "owasp"
+        },
+        {
+          "title": "OWASP Proactive Controls: Validate Data",
+          "url": "https://wiki.owasp.org/index.php/OWASP_Proactive_Controls#tab=OWASP_Proactive_Controls_2016",
+          "category": "owasp"
+        },
+        {
+          "title": "OWASP Application Security Verification Standard: V5",
+          "url": "https://wiki.owasp.org/index.php/Category:OWASP_Application_Security_Verification_Standard_Project",
+          "category": "owasp"
+        },
+        {
+          "title": "OWASP Testing Guide: Testing for Reflected XSS",
+          "url": "https://wiki.owasp.org/index.php/Testing_for_Reflected_Cross_site_scripting_(OTG-INPVAL-001",
+          "category": "owasp"
+        },
+        {
+          "title": "OWASP Testing Guide: Testing for Stored XSS",
+          "url": "https://wiki.owasp.org/index.php/Testing_for_Stored_Cross_site_scripting_(OTG-INPVAL-002",
+          "category": "owasp"
+        },
+        {
+          "title": "OWASP Testing Guide: Testing for DOM XSS",
+          "url": "https://wiki.owasp.org/index.php/Testing_for_DOM-based_Cross_site_scripting_(OTG-CLIENT-001",
+          "category": "owasp"
+        },
+        {
+          "title": "OWASP Cheat Sheet: XSS Prevention",
+          "url": "https://wiki.owasp.org/index.php/XSS_(Cross_Site_Scripting",
+          "category": "owasp"
+        },
+        {
+          "title": "OWASP Cheat Sheet: DOM based XSS Prevention",
+          "url": "https://wiki.owasp.org/index.php/DOM_based_XSS_Prevention_Cheat_Sheet",
+          "category": "owasp"
+        },
+        {
+          "title": "OWASP Cheat Sheet: XSS Filter Evasion",
+          "url": "https://wiki.owasp.org/index.php/XSS_Filter_Evasion_Cheat_Sheet",
+          "category": "owasp"
+        },
+        {
+          "title": "OWASP Java Encoder Project",
+          "url": "https://wiki.owasp.org/index.php/OWASP_Java_Encoder_Project",
+          "category": "owasp"
+        },
+        {
+          "title": "CWE-79: Improper neutralization of user supplied input",
+          "url": "https://cwe.mitre.org/data/definitions/79.html",
+          "category": "external"
+        },
+        {
+          "title": "PortSwigger: Client-side template injection",
+          "url": "https://portswigger.net/kb/issues/00200308_clientsidetemplateinjection",
+          "category": "external"
+        }
+      ],
+      "cweMappings": [
+        {
+          "id": 79,
+          "name": "Improper neutralization of user supplied input",
+          "url": "https://cwe.mitre.org/data/definitions/79.html"
+        }
+      ]
+    },
+    {
+      "id": "A8",
+      "version": "2017",
+      "code": "A8:2017",
+      "title": "Insecure Deserialization",
+      "slug": "a8-2017-insecure-deserialization",
+      "rank": 8,
+      "iconPath": null,
+      "backgroundHtml": null,
+      "scoreData": null,
+      "riskRating": {
+        "exploitability": 1,
+        "prevalence": 2,
+        "detectability": 2,
+        "technical_impact": 3
+      },
+      "description": {
+        "html": "<p>Applications and APIs will be vulnerable if they deserialize hostile or tampered objects supplied by an attacker.</p>\n<p>This can result in two primary types of attacks:</p>\n<ul>\n<li>Object and data structure related attacks where the attacker modifies application logic or achieves arbitrary remote code execution if there are classes available to the application that can change behavior during or after deserialization.</li>\n<li>Typical data tampering attacks such as access-control-related attacks where existing data structures are used but the content is changed.</li>\n</ul>\n<p>Serialization may be used in applications for:</p>\n<ul>\n<li>Remote- and inter-process communication (RPC/IPC)</li>\n<li>Wire protocols, web services, message brokers</li>\n<li>Caching/Persistence</li>\n<li>Databases, cache servers, file systems</li>\n<li>HTTP cookies, HTML form parameters, API authentication tokens</li>\n</ul>",
+        "plainText": "Applications and APIs will be vulnerable if they deserialize hostile or tampered objects supplied by an attacker.\nThis can result in two primary types of attacks:\n\nObject and data structure related attacks where the attacker modifies application logic or achieves arbitrary remote code execution if there are classes available to the application that can change behavior during or after deserialization.\nTypical data tampering attacks such as access-control-related attacks where existing data structures are used but the content is changed.\n\nSerialization may be used in applications for:\n\nRemote- and inter-process communication (RPC/IPC)\nWire protocols, web services, message brokers\nCaching/Persistence\nDatabases, cache servers, file systems\nHTTP cookies, HTML form parameters, API authentication tokens"
+      },
+      "prevention": {
+        "html": "<p>The only safe architectural pattern is not to accept serialized objects from untrusted sources or to use serialization mediums that only permit primitive data types.</p>\n<p>If that is not possible, consider one of more of the following:</p>\n<ul>\n<li>Implementing integrity checks such as digital signatures on any serialized objects to prevent hostile object creation or data tampering.</li>\n<li>Enforcing strict type constraints during deserialization before object creation as the code typically expects a definable set of classes. Bypasses to this technique have been demonstrated, so reliance solely on this is not advisable.</li>\n<li>Isolating and running code that deserializes in low privilege environments when possible.</li>\n<li>Log deserialization exceptions and failures, such as where the incoming type is not the expected type, or the deserialization throws exceptions.</li>\n<li>Restricting or monitoring incoming and outgoing network connectivity from containers or servers that deserialize.</li>\n<li>Monitoring deserialization, alerting if a user deserializes constantly.</li>\n</ul>",
+        "plainText": "The only safe architectural pattern is not to accept serialized objects from untrusted sources or to use serialization mediums that only permit primitive data types.\nIf that is not possible, consider one of more of the following:\n\nImplementing integrity checks such as digital signatures on any serialized objects to prevent hostile object creation or data tampering.\nEnforcing strict type constraints during deserialization before object creation as the code typically expects a definable set of classes. Bypasses to this technique have been demonstrated, so reliance solely on this is not advisable.\nIsolating and running code that deserializes in low privilege environments when possible.\nLog deserialization exceptions and failures, such as where the incoming type is not the expected type, or the deserialization throws exceptions.\nRestricting or monitoring incoming and outgoing network connectivity from containers or servers that deserialize.\nMonitoring deserialization, alerting if a user deserializes constantly."
+      },
+      "attackScenarios": [
+        {
+          "title": "Scenario #1",
+          "description": "A React application calls a set of Spring Boot microservices. Being functional programmers, they tried to ensure that their code is immutable. The solution they came up with is serializing user state and passing it back and forth with each request. An attacker notices the \"rO0\" Java object signature, and uses the Java Serial Killer tool to gain remote code execution on the application server.",
+          "codeBlocks": []
+        },
+        {
+          "title": "Scenario #2",
+          "description": "A PHP forum uses PHP object serialization to save a \"super\" cookie, containing the user's user ID, role, password hash, and other state:\n\n\n\nAn attacker changes the serialized object to give themselves admin privileges:",
+          "codeBlocks": [
+            {
+              "language": "text",
+              "code": "a:4:{i:0;i:132;i:1;s:7:\"Mallory\";i:2;s:4:\"user\";i:3;s:32:\"b6a8b3bea87fe0e05022f8f3c88bc960\";}"
+            },
+            {
+              "language": "text",
+              "code": "a:4:{i:0;i:1;i:1;s:5:\"Alice\";i:2;s:5:\"admin\";i:3;s:32:\"b6a8b3bea87fe0e05022f8f3c88bc960\";}"
+            }
+          ]
+        }
+      ],
+      "references": [
+        {
+          "title": "OWASP Cheat Sheet: Deserialization",
+          "url": "https://wiki.owasp.org/index.php/Deserialization_Cheat_Sheet",
+          "category": "owasp"
+        },
+        {
+          "title": "OWASP Proactive Controls: Validate All Inputs",
+          "url": "https://wiki.owasp.org/index.php/OWASP_Proactive_Controls#4:_Validate_All_Inputs",
+          "category": "owasp"
+        },
+        {
+          "title": "OWASP Application Security Verification Standard: TBA",
+          "url": "https://wiki.owasp.org/index.php/Category:OWASP_Application_Security_Verification_Standard_Project#tab=Home",
+          "category": "owasp"
+        },
+        {
+          "title": "OWASP AppSecEU 2016: Surviving the Java Deserialization Apocalypse",
+          "url": "https://speakerdeck.com/pwntester/surviving-the-java-deserialization-apocalypse",
+          "category": "owasp"
+        },
+        {
+          "title": "OWASP AppSecUSA 2017: Friday the 13th JSON Attacks",
+          "url": "https://speakerdeck.com/pwntester/friday-the-13th-json-attacks",
+          "category": "owasp"
+        },
+        {
+          "title": "CWE-502: Deserialization of Untrusted Data",
+          "url": "https://cwe.mitre.org/data/definitions/502.html",
+          "category": "external"
+        },
+        {
+          "title": "Java Unmarshaller Security",
+          "url": "https://github.com/mbechler/marshalsec",
+          "category": "external"
+        },
+        {
+          "title": "OWASP AppSec Cali 2015: Marshalling Pickles",
+          "url": "http://frohoff.github.io/appseccali-marshalling-pickles/",
+          "category": "external"
+        }
+      ],
+      "cweMappings": [
+        {
+          "id": 502,
+          "name": "Deserialization of Untrusted Data",
+          "url": "https://cwe.mitre.org/data/definitions/502.html"
+        }
+      ]
+    },
+    {
+      "id": "A9",
+      "version": "2017",
+      "code": "A9:2017",
+      "title": "Using Components with Known Vulnerabilities",
+      "slug": "a9-2017-using-components-with-known-vulnerabilities",
+      "rank": 9,
+      "iconPath": null,
+      "backgroundHtml": null,
+      "scoreData": null,
+      "riskRating": {
+        "exploitability": 2,
+        "prevalence": 3,
+        "detectability": 2,
+        "technical_impact": 2
+      },
+      "description": {
+        "html": "<p>You are likely vulnerable:</p>\n<ul>\n<li>If you do not know the versions of all components you use (both client-side and server-side). This includes components you directly use as well as nested dependencies.</li>\n<li>If software is vulnerable, unsupported, or out of date. This includes the OS, web/application server, database management system (DBMS), applications, APIs and all components, runtime environments, and libraries.</li>\n<li>If you do not scan for vulnerabilities regularly and subscribe to security bulletins related to the components you use.</li>\n<li>If you do not fix or upgrade the underlying platform, frameworks, and dependencies in a risk-based, timely fashion. This commonly happens in environments when patching is a monthly or quarterly task under change control, which leaves organizations open to many days or months of unnecessary exposure to fixed vulnerabilities.</li>\n<li>If software developers do not test the compatibility of updated, upgraded, or patched libraries.</li>\n<li>If you do not secure the components' configurations (see <strong>A6:2017-Security Misconfiguration</strong>).</li>\n</ul>",
+        "plainText": "You are likely vulnerable:\n\nIf you do not know the versions of all components you use (both client-side and server-side). This includes components you directly use as well as nested dependencies.\nIf software is vulnerable, unsupported, or out of date. This includes the OS, web/application server, database management system (DBMS), applications, APIs and all components, runtime environments, and libraries.\nIf you do not scan for vulnerabilities regularly and subscribe to security bulletins related to the components you use.\nIf you do not fix or upgrade the underlying platform, frameworks, and dependencies in a risk-based, timely fashion. This commonly happens in environments when patching is a monthly or quarterly task under change control, which leaves organizations open to many days or months of unnecessary exposure to fixed vulnerabilities.\nIf software developers do not test the compatibility of updated, upgraded, or patched libraries.\nIf you do not secure the components' configurations (see A6:2017-Security Misconfiguration)."
+      },
+      "prevention": {
+        "html": "<p>There should be a patch management process in place to:</p>\n<ul>\n<li>Remove unused dependencies, unnecessary features, components, files, and documentation.</li>\n<li>Continuously inventory the versions of both client-side and server-side components (e.g. frameworks, libraries) and their dependencies using tools like versions, DependencyCheck, retire.js, etc.</li>\n<li>Continuously monitor sources like CVE and NVD for vulnerabilities in the components. Use software composition analysis tools to automate the process. Subscribe to email alerts for security vulnerabilities related to components you use.</li>\n<li>Only obtain components from official sources over secure links. Prefer signed packages to reduce the chance of including a modified, malicious component.</li>\n<li>Monitor for libraries and components that are unmaintained or do not create security patches for older versions. If patching is not possible, consider deploying a virtual patch to monitor, detect, or protect against the discovered issue.</li>\n</ul>\n<p>Every organization must ensure that there is an ongoing plan for monitoring, triaging, and applying updates or configuration changes for the lifetime of the application or portfolio.</p>",
+        "plainText": "There should be a patch management process in place to:\n\nRemove unused dependencies, unnecessary features, components, files, and documentation.\nContinuously inventory the versions of both client-side and server-side components (e.g. frameworks, libraries) and their dependencies using tools like versions, DependencyCheck, retire.js, etc.\nContinuously monitor sources like CVE and NVD for vulnerabilities in the components. Use software composition analysis tools to automate the process. Subscribe to email alerts for security vulnerabilities related to components you use.\nOnly obtain components from official sources over secure links. Prefer signed packages to reduce the chance of including a modified, malicious component.\nMonitor for libraries and components that are unmaintained or do not create security patches for older versions. If patching is not possible, consider deploying a virtual patch to monitor, detect, or protect against the discovered issue.\n\nEvery organization must ensure that there is an ongoing plan for monitoring, triaging, and applying updates or configuration changes for the lifetime of the application or portfolio."
+      },
+      "attackScenarios": [
+        {
+          "title": "Scenario #1",
+          "description": "Components typically run with the same privileges as the application itself, so flaws in any component can result in serious impact. Such flaws can be accidental (e.g. coding error) or intentional (e.g. backdoor in component). Some example exploitable component vulnerabilities discovered are:\n\n* [CVE-2017-5638](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2017-5638), a Struts 2 remote code execution vulnerability that enables execution of arbitrary code on the server, has been blamed for significant breaches.\n* While [internet of things (IoT)](https://en.wikipedia.org/wiki/Internet_of_things) are frequently difficult or impossible to patch, the importance of patching them can be great (e.g. biomedical devices).\n\nThere are automated tools to help attackers find unpatched or misconfigured systems. For example, the [Shodan IoT search engine](https://www.shodan.io/report/89bnfUyJ) can help you find devices that still suffer from [Heartbleed](https://en.wikipedia.org/wiki/Heartbleed) vulnerability that was patched in April 2014.",
+          "codeBlocks": []
+        }
+      ],
+      "references": [
+        {
+          "title": "OWASP Application Security Verification Standard: V1 Architecture, design and threat modelling",
+          "url": "https://wiki.owasp.org/index.php/ASVS_V1_Architecture",
+          "category": "owasp"
+        },
+        {
+          "title": "OWASP Dependency Check (for Java and .NET libraries)",
+          "url": "https://wiki.owasp.org/index.php/OWASP_Dependency_Check",
+          "category": "owasp"
+        },
+        {
+          "title": "OWASP Testing Guide - Map Application Architecture (OTG-INFO-010)",
+          "url": "https://wiki.owasp.org/index.php/Map_Application_Architecture_(OTG-INFO-010",
+          "category": "owasp"
+        },
+        {
+          "title": "OWASP Virtual Patching Best Practices",
+          "url": "https://wiki.owasp.org/index.php/Virtual_Patching_Best_Practices",
+          "category": "owasp"
+        },
+        {
+          "title": "The Unfortunate Reality of Insecure Libraries",
+          "url": "https://www.aspectsecurity.com/research-presentations/the-unfortunate-reality-of-insecure-libraries",
+          "category": "external"
+        },
+        {
+          "title": "MITRE Common Vulnerabilities and Exposures (CVE) search",
+          "url": "https://www.cvedetails.com/version-search.php",
+          "category": "external"
+        },
+        {
+          "title": "National Vulnerability Database (NVD)",
+          "url": "https://nvd.nist.gov/",
+          "category": "external"
+        },
+        {
+          "title": "Retire.js for detecting known vulnerable JavaScript libraries",
+          "url": "https://github.com/retirejs/retire.js/",
+          "category": "external"
+        },
+        {
+          "title": "Node Libraries Security Advisories",
+          "url": "https://nodesecurity.io/advisories",
+          "category": "external"
+        },
+        {
+          "title": "Ruby Libraries Security Advisory Database and Tools",
+          "url": "https://rubysec.com/",
+          "category": "external"
+        }
+      ],
+      "cweMappings": []
+    },
+    {
+      "id": "A10",
+      "version": "2017",
+      "code": "A10:2017",
+      "title": "Insufficient Logging and Monitoring",
+      "slug": "a10-2017-insufficient-logging-and-monitoring",
+      "rank": 10,
+      "iconPath": null,
+      "backgroundHtml": null,
+      "scoreData": null,
+      "riskRating": {
+        "exploitability": 2,
+        "prevalence": 3,
+        "detectability": 1,
+        "technical_impact": 2
+      },
+      "description": {
+        "html": "<p>Insufficient logging, detection, monitoring and active response occurs any time:</p>\n<ul>\n<li>Auditable events, such as logins, failed logins, and high-value transactions are not logged.</li>\n<li>Warnings and errors generate no, inadequate, or unclear log messages.</li>\n<li>Logs of applications and APIs are not monitored for suspicious activity.</li>\n<li>Logs are only stored locally.</li>\n<li>Appropriate alerting thresholds and response escalation processes are not in place or effective.</li>\n<li>Penetration testing and scans by <a href=\"https://wiki.owasp.org/index.php/Category:Vulnerability_Scanning_Tools\">DAST</a> tools (such as <a href=\"https://wiki.owasp.org/index.php/OWASP_Zed_Attack_Proxy_Project\">OWASP ZAP</a>) do not trigger alerts.</li>\n<li>The application is unable to detect, escalate, or alert for active attacks in real time or near real time.</li>\n</ul>\n<p>You are vulnerable to information leakage if you make logging and alerting events visible to a user or an attacker (see A3:2017-Sensitive Information Exposure).</p>",
+        "plainText": "Insufficient logging, detection, monitoring and active response occurs any time:\n\nAuditable events, such as logins, failed logins, and high-value transactions are not logged.\nWarnings and errors generate no, inadequate, or unclear log messages.\nLogs of applications and APIs are not monitored for suspicious activity.\nLogs are only stored locally.\nAppropriate alerting thresholds and response escalation processes are not in place or effective.\nPenetration testing and scans by DAST tools (such as OWASP ZAP) do not trigger alerts.\nThe application is unable to detect, escalate, or alert for active attacks in real time or near real time.\n\nYou are vulnerable to information leakage if you make logging and alerting events visible to a user or an attacker (see A3:2017-Sensitive Information Exposure)."
+      },
+      "prevention": {
+        "html": "<p>As per the risk of the data stored or processed by the application:</p>\n<ul>\n<li>Ensure all login, access control failures, and server-side input validation failures can be logged with sufficient user context to identify suspicious or malicious accounts, and held for sufficient time to allow delayed forensic analysis.</li>\n<li>Ensure that logs are generated in a format that can be easily consumed by a centralized log management solutions.</li>\n<li>Ensure high-value transactions have an audit trail with integrity controls to prevent tampering or deletion, such as append-only database tables or similar.</li>\n<li>Establish effective monitoring and alerting such that suspicious activities are detected and responded to in a timely fashion.</li>\n<li>Establish or adopt an incident response and recovery plan, such as <a href=\"https://csrc.nist.gov/publications/detail/sp/800-61/rev-2/final\">NIST 800-61 rev 2</a> or later.</li>\n</ul>\n<p>There are commercial and open source application protection frameworks such as <a href=\"https://wiki.owasp.org/index.php/OWASP_AppSensor_Project\">OWASP AppSensor</a>, web application firewalls such as <a href=\"https://wiki.owasp.org/index.php/Category:OWASP_ModSecurity_Core_Rule_Set_Project\">ModSecurity with the OWASP ModSecurity Core Rule Set</a>, and log correlation software with custom dashboards and alerting.</p>",
+        "plainText": "As per the risk of the data stored or processed by the application:\n\nEnsure all login, access control failures, and server-side input validation failures can be logged with sufficient user context to identify suspicious or malicious accounts, and held for sufficient time to allow delayed forensic analysis.\nEnsure that logs are generated in a format that can be easily consumed by a centralized log management solutions.\nEnsure high-value transactions have an audit trail with integrity controls to prevent tampering or deletion, such as append-only database tables or similar.\nEstablish effective monitoring and alerting such that suspicious activities are detected and responded to in a timely fashion.\nEstablish or adopt an incident response and recovery plan, such as NIST 800-61 rev 2 or later.\n\nThere are commercial and open source application protection frameworks such as OWASP AppSensor, web application firewalls such as ModSecurity with the OWASP ModSecurity Core Rule Set, and log correlation software with custom dashboards and alerting."
+      },
+      "attackScenarios": [
+        {
+          "title": "Scenario #1",
+          "description": "An open source project forum software run by a small team was hacked using a flaw in its software. The attackers managed to wipe out the internal source code repository containing the next version, and all of the forum contents. Although source could be recovered, the lack of monitoring, logging or alerting led to a far worse breach. The forum software project is no longer active as a result of this issue.",
+          "codeBlocks": []
+        },
+        {
+          "title": "Scenario #2",
+          "description": "An attacker uses scans for users using a common password. They can take over all accounts using this password. For all other users, this scan leaves only one false login behind. After some days, this may be repeated with a different password.",
+          "codeBlocks": []
+        },
+        {
+          "title": "Scenario #3",
+          "description": "A major US retailer reportedly had an internal malware analysis sandbox analyzing attachments. The sandbox software had detected potentially unwanted software, but no one responded to this detection. The sandbox had been producing warnings for some time before the breach was detected due to fraudulent card transactions by an external bank.",
+          "codeBlocks": []
+        }
+      ],
+      "references": [
+        {
+          "title": "OWASP Proactive Controls: Implement Logging and Intrusion Detection",
+          "url": "https://wiki.owasp.org/index.php/OWASP_Proactive_Controls#8:_Implement_Logging_and_Intrusion_Detection",
+          "category": "owasp"
+        },
+        {
+          "title": "OWASP Application Security Verification Standard: V8 Logging and Monitoring",
+          "url": "https://wiki.owasp.org/index.php/Category:OWASP_Application_Security_Verification_Standard_Project#tab=Home",
+          "category": "owasp"
+        },
+        {
+          "title": "OWASP Testing Guide: Testing for Detailed Error Code",
+          "url": "https://wiki.owasp.org/index.php/Category:OWASP_Application_Security_Verification_Standard_Project#tab=Home",
+          "category": "owasp"
+        },
+        {
+          "title": "OWASP Cheat Sheet: Logging",
+          "url": "https://wiki.owasp.org/index.php/Logging_Cheat_Sheet",
+          "category": "owasp"
+        },
+        {
+          "title": "CWE-223: Omission of Security-relevant Information",
+          "url": "https://cwe.mitre.org/data/definitions/223.html",
+          "category": "external"
+        },
+        {
+          "title": "CWE-778: Insufficient Logging",
+          "url": "https://cwe.mitre.org/data/definitions/778.html",
+          "category": "external"
+        }
+      ],
+      "cweMappings": [
+        {
+          "id": 223,
+          "name": "Omission of Security-relevant Information",
+          "url": "https://cwe.mitre.org/data/definitions/223.html"
+        },
+        {
+          "id": 778,
+          "name": "Insufficient Logging",
+          "url": "https://cwe.mitre.org/data/definitions/778.html"
+        }
+      ]
+    }
+  ]
+}

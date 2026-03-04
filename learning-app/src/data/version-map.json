@@ -1,0 +1,74 @@
+[
+  {
+    "2017": "a5-2017-broken-access-control",
+    "2021": "a01-2021-broken-access-control",
+    "2025": "a01-2025-broken-access-control",
+    "concept": "Broken Access Control"
+  },
+  {
+    "2017": "a3-2017-sensitive-data-disclosure",
+    "2021": "a02-2021-cryptographic-failures",
+    "2025": "a04-2025-cryptographic-failures",
+    "concept": "Cryptographic Failures"
+  },
+  {
+    "2017": "a1-2017-injection",
+    "2021": "a03-2021-injection",
+    "2025": "a05-2025-injection",
+    "concept": "Injection"
+  },
+  {
+    "2017": null,
+    "2021": "a04-2021-insecure-design",
+    "2025": "a06-2025-insecure-design",
+    "concept": "Insecure Design"
+  },
+  {
+    "2017": "a6-2017-security-misconfiguration",
+    "2021": "a05-2021-security-misconfiguration",
+    "2025": "a02-2025-security-misconfiguration",
+    "concept": "Security Misconfiguration"
+  },
+  {
+    "2017": "a9-2017-using-components-with-known-vulnerabilities",
+    "2021": "a06-2021-vulnerable-and-outdated-components",
+    "2025": "a03-2025-software-supply-chain-failures",
+    "concept": "Vulnerable & Outdated Components / Supply Chain"
+  },
+  {
+    "2017": "a2-2017-broken-authentication",
+    "2021": "a07-2021-identification-and-authentication-failures",
+    "2025": "a07-2025-authentication-failures",
+    "concept": "Authentication Failures"
+  },
+  {
+    "2017": "a8-2017-insecure-deserialization",
+    "2021": "a08-2021-software-and-data-integrity-failures",
+    "2025": "a08-2025-software-or-data-integrity-failures",
+    "concept": "Software & Data Integrity Failures"
+  },
+  {
+    "2017": "a10-2017-insufficient-logging-detection-response",
+    "2021": "a09-2021-security-logging-and-monitoring-failures",
+    "2025": "a09-2025-security-logging-and-alerting-failures",
+    "concept": "Security Logging & Monitoring Failures"
+  },
+  {
+    "2017": null,
+    "2021": "a10-2021-server-side-request-forgery-ssrf-",
+    "2025": "a10-2025-mishandling-of-exceptional-conditions",
+    "concept": "SSRF / Mishandling Exceptional Conditions"
+  },
+  {
+    "2017": "a4-2017-xxe",
+    "2021": null,
+    "2025": null,
+    "concept": "XXE"
+  },
+  {
+    "2017": "a7-2017-xss",
+    "2021": null,
+    "2025": null,
+    "concept": "XSS"
+  }
+]
