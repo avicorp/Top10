@@ -4,13 +4,14 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "predev": "tsx scripts/parse-content.ts && tsx scripts/generate-quizzes.ts",
-    "prebuild": "tsx scripts/parse-content.ts && tsx scripts/generate-quizzes.ts",
+    "predev": "tsx scripts/parse-content.ts && tsx scripts/parse-sysdesign.ts && tsx scripts/generate-quizzes.ts",
+    "prebuild": "tsx scripts/parse-content.ts && tsx scripts/parse-sysdesign.ts && tsx scripts/generate-quizzes.ts",
     "dev": "vite",
     "build": "tsc -b && vite build",
     "preview": "vite preview"
   },
   "dependencies": {
+    "mermaid": "^11.4.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-router-dom": "^7.1.0"

@@ -58,7 +58,7 @@ function VersionTimeline() {
                 <div key={ver} className="text-center">
                   {vuln ? (
                     <Link
-                      to={`/version/${ver}/${slug}`}
+                      to={`/owasp/version/${ver}/${slug}`}
                       className={`inline-block px-3 py-2 rounded-lg border text-xs font-medium transition-all hover:scale-105 ${color}`}
                     >
                       <div className="font-mono">{vuln.code}</div>
@@ -102,7 +102,7 @@ function VulnerabilityDiff({ slug2017, slug2021, slug2025 }: {
         <div key={label} className="rounded-xl dark:bg-slate-800 bg-white border dark:border-slate-700 border-slate-200 p-4">
           <div className="flex items-center justify-between mb-3">
             <h4 className="font-mono text-sm font-bold">{vuln!.code}</h4>
-            <Link to={`/version/${ver}/${vuln!.slug}`} className="text-xs text-blue-500 hover:text-blue-400">
+            <Link to={`/owasp/version/${ver}/${vuln!.slug}`} className="text-xs text-blue-500 hover:text-blue-400">
               View full &#x2192;
             </Link>
           </div>

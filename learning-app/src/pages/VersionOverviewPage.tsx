@@ -12,7 +12,7 @@ function VulnerabilityCard({ vuln, version }: { vuln: any; version: OwaspVersion
 
   return (
     <Link
-      to={`/version/${version}/${vuln.slug}`}
+      to={`/owasp/version/${version}/${vuln.slug}`}
       className="group block rounded-xl border dark:border-slate-700 border-slate-200 dark:bg-slate-800 bg-white p-5 transition-all hover:border-blue-500/50 hover:shadow-lg hover:shadow-blue-500/5"
     >
       <div className="flex items-start justify-between mb-3">
@@ -59,7 +59,7 @@ export default function VersionOverviewPage() {
         <div className="flex items-center gap-4 text-sm dark:text-slate-400 text-slate-500">
           <span>{vulns.length} vulnerabilities</span>
           <span>{readCount}/{vulns.length} studied</span>
-          <Link to={`/quiz/${v}`} className="text-amber-500 hover:text-amber-400 transition-colors">
+          <Link to={`/owasp/quiz/${v}`} className="text-amber-500 hover:text-amber-400 transition-colors">
             Take a quiz &#x2192;
           </Link>
         </div>

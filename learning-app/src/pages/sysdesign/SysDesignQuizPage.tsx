@@ -1,63 +1,11 @@
 import { useState, useMemo } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { useQuizQuestions, useVersionData } from '../hooks/useContentData';
-import { useProgress } from '../context/ProgressContext';
-import type { OwaspVersion, QuizQuestion } from '../types';
-
-function QuizSelection() {
-  const v2025 = useVersionData('2025');
-  const v2021 = useVersionData('2021');
-  const v2017 = useVersionData('2017');
-
-  return (
-    <div className="max-w-3xl mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-8">Quiz</h1>
-
-      <div className="space-y-6">
-        {[
-          { version: '2025' as const, vulns: v2025, color: 'blue' },
-          { version: '2021' as const, vulns: v2021, color: 'emerald' },
-          { version: '2017' as const, vulns: v2017, color: 'amber' },
-        ].map(({ version, vulns, color }) => (
-          <div key={version} className="rounded-xl dark:bg-slate-800 bg-white border dark:border-slate-700 border-slate-200 p-5">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-xl font-bold">{version} Edition</h2>
-              <Link
-                to={`/owasp/quiz/${version}`}
-                className={`px-4 py-2 rounded-lg text-sm font-medium bg-${color}-500 text-white hover:bg-${color}-600 transition-colors`}
-              >
-                All {version} Questions
-              </Link>
-            </div>
-            <div className="grid sm:grid-cols-2 gap-2">
-              {vulns.map(v => (
-                <Link
-                  key={v.slug}
-                  to={`/owasp/quiz/${version}/${v.slug}`}
-                  className="px-3 py-2 rounded-lg text-sm dark:hover:bg-slate-700 hover:bg-slate-100 transition-colors dark:text-slate-300 text-slate-600"
-                >
-                  <span className="font-mono dark:text-slate-500 text-slate-400 mr-2">{v.id}</span>
-                  {v.title}
-                </Link>
-              ))}
-            </div>
-          </div>
-        ))}
-
-        <Link
-          to="/owasp/quiz/cross-version"
-          className="block rounded-xl dark:bg-slate-800 bg-white border dark:border-slate-700 border-slate-200 p-5 hover:border-purple-500/50 transition-colors"
-        >
-          <h2 className="text-xl font-bold mb-1">Cross-Version Quiz</h2>
-          <p className="text-sm dark:text-slate-400 text-slate-500">Test your knowledge of how vulnerabilities evolved across editions</p>
-        </Link>
-      </div>
-    </div>
-  );
-}
+import { useSysDesignQuizzes, useSysDesignTopic } from '../../hooks/useSysDesignData';
+import { useProgress } from '../../context/ProgressContext';
+import type { SysDesignQuizQuestion } from '../../types';
 
 function QuestionCard({ question, onAnswer, answered, selectedIndex }: {
-  question: QuizQuestion;
+  question: SysDesignQuizQuestion;
   onAnswer: (idx: number) => void;
   answered: boolean;
   selectedIndex: number | null;
@@ -66,30 +14,21 @@ function QuestionCard({ question, onAnswer, answered, selectedIndex }: {
     <div className="rounded-xl dark:bg-slate-800 bg-white border dark:border-slate-700 border-slate-200 p-6">
       <div className="flex items-center gap-2 mb-4">
         <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${
-          question.difficulty === 'beginner' ? 'bg-green-500/20 text-green-400' :
-          question.difficulty === 'intermediate' ? 'bg-amber-500/20 text-amber-400' :
+          question.difficulty === 'easy' ? 'bg-green-500/20 text-green-400' :
+          question.difficulty === 'medium' ? 'bg-amber-500/20 text-amber-400' :
           'bg-red-500/20 text-red-400'
         }`}>
           {question.difficulty}
         </span>
-        <span className="px-2 py-0.5 rounded-full text-xs font-medium dark:bg-slate-700 bg-slate-200 dark:text-slate-400 text-slate-500">
-          {question.type.replace('_', ' ')}
-        </span>
       </div>
 
-      <h3 className="text-lg font-semibold mb-2 whitespace-pre-line">{question.question}</h3>
+      <h3 className="text-lg font-semibold mb-4 whitespace-pre-line">{question.question}</h3>
 
-      {question.codeSnippet && (
-        <pre className="rounded-lg my-3 overflow-x-auto">
-          <code>{question.codeSnippet}</code>
-        </pre>
-      )}
-
-      <div className="space-y-2 mt-4">
+      <div className="space-y-2">
         {question.options.map((option, i) => {
           let classes = 'w-full text-left px-4 py-3 rounded-lg text-sm transition-all border ';
           if (!answered) {
-            classes += 'dark:border-slate-700 border-slate-200 dark:hover:border-blue-500/50 hover:border-blue-400 dark:hover:bg-slate-700/50 hover:bg-blue-50 cursor-pointer';
+            classes += 'dark:border-slate-700 border-slate-200 dark:hover:border-purple-500/50 hover:border-purple-400 dark:hover:bg-slate-700/50 hover:bg-purple-50 cursor-pointer';
           } else if (i === question.correctIndex) {
             classes += 'border-green-500 bg-green-500/10 text-green-400';
           } else if (i === selectedIndex) {
@@ -128,17 +67,28 @@ function QuestionCard({ question, onAnswer, answered, selectedIndex }: {
   );
 }
 
-function QuizRunner({ questions, quizId }: { questions: QuizQuestion[]; quizId: string }) {
-  const [currentIdx, setCurrentIdx] = useState(0);
-  const [answers, setAnswers] = useState<(number | null)[]>(new Array(questions.length).fill(null));
-  const [showResults, setShowResults] = useState(false);
+export default function SysDesignQuizPage() {
+  const { slug } = useParams<{ slug: string }>();
+  const questions = useSysDesignQuizzes(slug);
+  const topic = useSysDesignTopic(slug || '');
   const { dispatch } = useProgress();
 
+  const quizId = `sysdesign:${slug}`;
+  const [currentIdx, setCurrentIdx] = useState(0);
+  const [answers, setAnswers] = useState<(number | null)[]>([]);
+  const [showResults, setShowResults] = useState(false);
+
   const shuffled = useMemo(() => {
-    // Shuffle questions but keep them stable during the quiz
-    return [...questions].sort(() => 0.5 - Math.random()).slice(0, Math.min(10, questions.length));
+    const arr = [...questions].sort(() => 0.5 - Math.random()).slice(0, Math.min(10, questions.length));
+    return arr;
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [quizId]);
+
+  // Initialize answers array
+  if (answers.length !== shuffled.length && shuffled.length > 0) {
+    setAnswers(new Array(shuffled.length).fill(null));
+    return null;
+  }
 
   const currentQ = shuffled[currentIdx];
   const answered = answers[currentIdx] !== null;
@@ -153,7 +103,7 @@ function QuizRunner({ questions, quizId }: { questions: QuizQuestion[]; quizId: 
   const handleFinish = () => {
     setShowResults(true);
     dispatch({
-      type: 'RECORD_QUIZ',
+      type: 'RECORD_SYSDESIGN_QUIZ',
       attempt: {
         quizId,
         score,
@@ -166,9 +116,9 @@ function QuizRunner({ questions, quizId }: { questions: QuizQuestion[]; quizId: 
 
   if (shuffled.length === 0) {
     return (
-      <div className="text-center py-16">
-        <p className="dark:text-slate-400 text-slate-500">No questions available for this selection.</p>
-        <Link to="/owasp/quiz" className="text-blue-500 hover:text-blue-400 mt-4 inline-block">
+      <div className="max-w-3xl mx-auto px-4 py-8 text-center">
+        <p className="dark:text-slate-400 text-slate-500">No questions available for this topic.</p>
+        <Link to="/sysdesign/quiz" className="text-purple-500 hover:text-purple-400 mt-4 inline-block">
           Back to quiz selection
         </Link>
       </div>
@@ -178,7 +128,7 @@ function QuizRunner({ questions, quizId }: { questions: QuizQuestion[]; quizId: 
   if (showResults) {
     const percentage = Math.round((score / shuffled.length) * 100);
     return (
-      <div className="max-w-2xl mx-auto">
+      <div className="max-w-2xl mx-auto px-4 py-8">
         <div className="text-center mb-8">
           <div className="text-6xl font-bold mb-2">{percentage}%</div>
           <p className="text-lg dark:text-slate-400 text-slate-500">
@@ -198,23 +148,18 @@ function QuizRunner({ questions, quizId }: { questions: QuizQuestion[]; quizId: 
               }`}>
                 <span className={correct ? 'text-green-500' : 'text-red-500'}>{correct ? '\u2713' : '\u2717'}</span>
                 <span className="ml-2">{q.question.slice(0, 80)}...</span>
-                {q.vulnerabilitySlug && (
-                  <Link to={`/owasp/version/${q.version}/${q.vulnerabilitySlug}`} className="ml-2 text-blue-500 hover:text-blue-400 text-xs">
-                    Study &#x2192;
-                  </Link>
-                )}
               </div>
             );
           })}
         </div>
 
         <div className="flex justify-center gap-4">
-          <Link to="/owasp/quiz" className="px-4 py-2 rounded-lg dark:bg-slate-700 bg-slate-200 text-sm font-medium transition-colors dark:hover:bg-slate-600 hover:bg-slate-300">
+          <Link to="/sysdesign/quiz" className="px-4 py-2 rounded-lg dark:bg-slate-700 bg-slate-200 text-sm font-medium transition-colors dark:hover:bg-slate-600 hover:bg-slate-300">
             Back to Quizzes
           </Link>
           <button
             onClick={() => { setShowResults(false); setCurrentIdx(0); setAnswers(new Array(shuffled.length).fill(null)); }}
-            className="px-4 py-2 rounded-lg bg-blue-500 text-white text-sm font-medium transition-colors hover:bg-blue-600"
+            className="px-4 py-2 rounded-lg bg-purple-500 text-white text-sm font-medium transition-colors hover:bg-purple-600"
           >
             Retry
           </button>
@@ -224,7 +169,16 @@ function QuizRunner({ questions, quizId }: { questions: QuizQuestion[]; quizId: 
   }
 
   return (
-    <div className="max-w-2xl mx-auto">
+    <div className="max-w-2xl mx-auto px-4 py-8">
+      <div className="mb-6">
+        <Link to="/sysdesign/quiz" className="text-sm dark:text-slate-400 text-slate-500 hover:text-purple-500 transition-colors">
+          &#x2190; All quizzes
+        </Link>
+        <h1 className="text-2xl font-bold mt-2">
+          {topic ? `${topic.title} Quiz` : slug === 'mixed' ? 'Mixed Quiz' : 'System Design Quiz'}
+        </h1>
+      </div>
+
       {/* Progress bar */}
       <div className="flex items-center gap-4 mb-6">
         <span className="text-sm dark:text-slate-400 text-slate-500">
@@ -232,7 +186,7 @@ function QuizRunner({ questions, quizId }: { questions: QuizQuestion[]; quizId: 
         </span>
         <div className="flex-1 h-2 dark:bg-slate-700 bg-slate-200 rounded-full overflow-hidden">
           <div
-            className="h-full bg-blue-500 rounded-full transition-all"
+            className="h-full bg-purple-500 rounded-full transition-all"
             style={{ width: `${((currentIdx + 1) / shuffled.length) * 100}%` }}
           />
         </div>
@@ -260,7 +214,7 @@ function QuizRunner({ questions, quizId }: { questions: QuizQuestion[]; quizId: 
           <button
             onClick={() => setCurrentIdx(i => i + 1)}
             disabled={!answered}
-            className="px-4 py-2 rounded-lg bg-blue-500 text-white text-sm disabled:opacity-40 transition-colors hover:bg-blue-600"
+            className="px-4 py-2 rounded-lg bg-purple-500 text-white text-sm disabled:opacity-40 transition-colors hover:bg-purple-600"
           >
             Next
           </button>
@@ -276,34 +230,4 @@ function QuizRunner({ questions, quizId }: { questions: QuizQuestion[]; quizId: 
       </div>
     </div>
   );
-}
-
-export default function QuizPage() {
-  const { version, slug } = useParams<{ version: string; slug: string }>();
-
-  if (!version) return <QuizSelection />;
-
-  const quizId = slug ? `${version}:${slug}` : version;
-
-  return (
-    <div className="max-w-3xl mx-auto px-4 py-8">
-      <div className="mb-6">
-        <Link to="/owasp/quiz" className="text-sm dark:text-slate-400 text-slate-500 hover:text-blue-500 transition-colors">
-          &#x2190; All quizzes
-        </Link>
-        <h1 className="text-2xl font-bold mt-2">
-          {slug ? 'Topic Quiz' : version === 'cross-version' ? 'Cross-Version Quiz' : `${version} Edition Quiz`}
-        </h1>
-      </div>
-      <QuizRunnerWrapper version={version} slug={slug} quizId={quizId} />
-    </div>
-  );
-}
-
-function QuizRunnerWrapper({ version, slug, quizId }: { version: string; slug?: string; quizId: string }) {
-  const questions = useQuizQuestions(
-    version as OwaspVersion | 'cross-version',
-    slug
-  );
-  return <QuizRunner questions={questions} quizId={quizId} />;
 }

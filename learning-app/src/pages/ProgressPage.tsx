@@ -2,36 +2,37 @@ import { useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useProgress } from '../context/ProgressContext';
 import { useVersionData } from '../hooks/useContentData';
+import { useSysDesignTopics } from '../hooks/useSysDesignData';
+import { interviews } from '../data/sysdesign-interviews';
+import ProgressRing from '../components/shared/ProgressRing';
 import type { OwaspVersion } from '../types';
 
-function CompletionRing({ version, color }: { version: OwaspVersion; color: string }) {
+function OwaspCompletionRing({ version, color }: { version: OwaspVersion; color: string }) {
   const vulns = useVersionData(version);
   const { isRead } = useProgress();
   const readCount = vulns.filter(v => isRead(v.slug, version)).length;
   const percentage = vulns.length > 0 ? Math.round((readCount / vulns.length) * 100) : 0;
 
-  return (
-    <div className="flex flex-col items-center">
-      <div className="relative w-24 h-24">
-        <svg className="w-24 h-24 -rotate-90" viewBox="0 0 36 36">
-          <path
-            d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-            fill="none" stroke="currentColor" strokeWidth="3"
-            className="dark:text-slate-700 text-slate-200"
-          />
-          <path
-            d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-            fill="none" stroke="currentColor" strokeWidth="3"
-            strokeDasharray={`${percentage}, 100`}
-            className={color}
-          />
-        </svg>
-        <span className="absolute inset-0 flex items-center justify-center text-lg font-bold">{percentage}%</span>
-      </div>
-      <span className="text-sm font-medium mt-2">{version}</span>
-      <span className="text-xs dark:text-slate-500 text-slate-400">{readCount}/{vulns.length}</span>
-    </div>
-  );
+  return <ProgressRing percentage={percentage} size={96} colorClass={color} label={version} sublabel={`${readCount}/${vulns.length}`} />;
+}
+
+function SysDesignCompletionRing() {
+  const topics = useSysDesignTopics();
+  const { getTopicStatus } = useProgress();
+  const learnedCount = topics.filter(t => getTopicStatus(t.slug) === 'learned').length;
+  const percentage = topics.length > 0 ? Math.round((learnedCount / topics.length) * 100) : 0;
+
+  return <ProgressRing percentage={percentage} size={96} colorClass="text-purple-500" label="Topics" sublabel={`${learnedCount}/${topics.length}`} />;
+}
+
+function InterviewCompletionRing() {
+  const { progress } = useProgress();
+  const completedCount = interviews.filter(
+    i => (progress.sysdesign.interviewSteps[i.slug]?.length || 0) >= i.steps.length
+  ).length;
+  const percentage = interviews.length > 0 ? Math.round((completedCount / interviews.length) * 100) : 0;
+
+  return <ProgressRing percentage={percentage} size={96} colorClass="text-pink-500" label="Interviews" sublabel={`${completedCount}/${interviews.length}`} />;
 }
 
 export default function ProgressPage() {
@@ -40,14 +41,15 @@ export default function ProgressPage() {
   const [showConfirmReset, setShowConfirmReset] = useState(false);
 
   const bookmarked = Object.values(progress.vulnerabilities).filter(v => v.bookmarked);
-  const recentAttempts = [...progress.quizAttempts].sort((a, b) => b.timestamp - a.timestamp).slice(0, 10);
+  const owaspAttempts = [...progress.quizAttempts].sort((a, b) => b.timestamp - a.timestamp).slice(0, 5);
+  const sysdesignAttempts = [...progress.sysdesign.quizAttempts].sort((a, b) => b.timestamp - a.timestamp).slice(0, 5);
 
   const handleExport = () => {
     const blob = new Blob([exportProgress()], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `owasp-progress-${new Date().toISOString().split('T')[0]}.json`;
+    a.download = `learning-progress-${new Date().toISOString().split('T')[0]}.json`;
     a.click();
     URL.revokeObjectURL(url);
   };
@@ -71,26 +73,70 @@ export default function ProgressPage() {
     <div className="max-w-4xl mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold mb-8">Your Progress</h1>
 
-      {/* Completion rings */}
+      {/* OWASP Completion */}
       <div className="rounded-xl dark:bg-slate-800 bg-white border dark:border-slate-700 border-slate-200 p-6 mb-8">
-        <h2 className="text-lg font-semibold mb-4">Study Completion</h2>
+        <h2 className="text-lg font-semibold mb-4">
+          <Link to="/owasp" className="hover:text-blue-500 transition-colors">OWASP Top 10</Link>
+        </h2>
         <div className="flex justify-around">
-          <CompletionRing version="2017" color="text-amber-500" />
-          <CompletionRing version="2021" color="text-emerald-500" />
-          <CompletionRing version="2025" color="text-blue-500" />
+          <OwaspCompletionRing version="2017" color="text-amber-500" />
+          <OwaspCompletionRing version="2021" color="text-emerald-500" />
+          <OwaspCompletionRing version="2025" color="text-blue-500" />
         </div>
       </div>
 
-      {/* Quiz history */}
+      {/* System Design Completion */}
       <div className="rounded-xl dark:bg-slate-800 bg-white border dark:border-slate-700 border-slate-200 p-6 mb-8">
-        <h2 className="text-lg font-semibold mb-4">Quiz History</h2>
-        {recentAttempts.length === 0 ? (
-          <p className="text-sm dark:text-slate-400 text-slate-500">No quizzes completed yet.{' '}
-            <Link to="/quiz" className="text-blue-500 hover:text-blue-400">Take one now</Link>
+        <h2 className="text-lg font-semibold mb-4">
+          <Link to="/sysdesign" className="hover:text-purple-500 transition-colors">System Design</Link>
+        </h2>
+        <div className="flex justify-around">
+          <SysDesignCompletionRing />
+          <InterviewCompletionRing />
+        </div>
+      </div>
+
+      {/* Quiz History - OWASP */}
+      <div className="rounded-xl dark:bg-slate-800 bg-white border dark:border-slate-700 border-slate-200 p-6 mb-8">
+        <h2 className="text-lg font-semibold mb-4">OWASP Quiz History</h2>
+        {owaspAttempts.length === 0 ? (
+          <p className="text-sm dark:text-slate-400 text-slate-500">No OWASP quizzes completed yet.{' '}
+            <Link to="/owasp/quiz" className="text-blue-500 hover:text-blue-400">Take one now</Link>
           </p>
         ) : (
           <div className="space-y-2">
-            {recentAttempts.map((attempt, i) => {
+            {owaspAttempts.map((attempt, i) => {
+              const pct = Math.round((attempt.score / attempt.total) * 100);
+              return (
+                <div key={i} className="flex items-center gap-4 text-sm">
+                  <span className="dark:text-slate-500 text-slate-400 min-w-[5rem]">
+                    {new Date(attempt.timestamp).toLocaleDateString()}
+                  </span>
+                  <span className="min-w-[6rem] font-mono dark:text-slate-400 text-slate-500">{attempt.quizId}</span>
+                  <div className="flex-1 h-2 dark:bg-slate-700 bg-slate-200 rounded-full overflow-hidden">
+                    <div
+                      className={`h-full rounded-full ${pct >= 80 ? 'bg-green-500' : pct >= 60 ? 'bg-amber-500' : 'bg-red-500'}`}
+                      style={{ width: `${pct}%` }}
+                    />
+                  </div>
+                  <span className="font-medium min-w-[3rem] text-right">{pct}%</span>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
+
+      {/* Quiz History - System Design */}
+      <div className="rounded-xl dark:bg-slate-800 bg-white border dark:border-slate-700 border-slate-200 p-6 mb-8">
+        <h2 className="text-lg font-semibold mb-4">System Design Quiz History</h2>
+        {sysdesignAttempts.length === 0 ? (
+          <p className="text-sm dark:text-slate-400 text-slate-500">No system design quizzes completed yet.{' '}
+            <Link to="/sysdesign/quiz" className="text-purple-500 hover:text-purple-400">Take one now</Link>
+          </p>
+        ) : (
+          <div className="space-y-2">
+            {sysdesignAttempts.map((attempt, i) => {
               const pct = Math.round((attempt.score / attempt.total) * 100);
               return (
                 <div key={i} className="flex items-center gap-4 text-sm">
@@ -122,7 +168,7 @@ export default function ProgressPage() {
             {bookmarked.map(vp => (
               <Link
                 key={`${vp.version}:${vp.slug}`}
-                to={`/version/${vp.version}/${vp.slug}`}
+                to={`/owasp/version/${vp.version}/${vp.slug}`}
                 className="flex items-center gap-2 px-3 py-2 rounded-lg dark:hover:bg-slate-700 hover:bg-slate-100 text-sm transition-colors"
               >
                 <span className="text-amber-400">&#9733;</span>

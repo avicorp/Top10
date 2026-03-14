@@ -1,0 +1,8 @@
+{
+  "buildCommand": "cd learning-app && npm install && npm run build",
+  "outputDirectory": "learning-app/dist",
+  "framework": null,
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
+}

@@ -76,6 +76,64 @@ pre code {
   font-weight: 600;
 }
 
+/* System design content styling */
+.sysdesign-content ul {
+  list-style-type: disc;
+  padding-left: 1.5rem;
+  margin: 0.5rem 0;
+}
+.sysdesign-content ul li {
+  margin: 0.25rem 0;
+}
+.sysdesign-content ol {
+  list-style-type: decimal;
+  padding-left: 1.5rem;
+  margin: 0.5rem 0;
+}
+.sysdesign-content ol li {
+  margin: 0.25rem 0;
+}
+.sysdesign-content p {
+  margin: 0.5rem 0;
+}
+.sysdesign-content a {
+  color: #a855f7;
+  text-decoration: underline;
+}
+.sysdesign-content strong {
+  font-weight: 600;
+}
+.sysdesign-content h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 1rem 0 0.5rem;
+}
+.sysdesign-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0.5rem 0;
+  font-size: 0.875rem;
+}
+.sysdesign-content th,
+.sysdesign-content td {
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+}
+.dark .sysdesign-content th {
+  background: #1e293b;
+  border-bottom: 1px solid #334155;
+}
+.dark .sysdesign-content td {
+  border-bottom: 1px solid #1e293b;
+}
+:not(.dark) .sysdesign-content th {
+  background: #f1f5f9;
+  border-bottom: 1px solid #e2e8f0;
+}
+:not(.dark) .sysdesign-content td {
+  border-bottom: 1px solid #f1f5f9;
+}
+
 /* Skip to content link */
 .skip-link {
   position: absolute;

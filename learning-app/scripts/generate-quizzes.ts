@@ -250,6 +250,17 @@ function main() {
     JSON.stringify(allQuestions, null, 2)
   );
 
+  // Generate sysdesign quizzes
+  const sysdesignQuizBankPath = path.resolve(import.meta.dirname, 'sysdesign-quiz-bank.json');
+  if (fs.existsSync(sysdesignQuizBankPath)) {
+    const sysdesignQuestions = JSON.parse(fs.readFileSync(sysdesignQuizBankPath, 'utf-8'));
+    fs.writeFileSync(
+      path.join(DATA_DIR, 'sysdesign-quizzes.json'),
+      JSON.stringify(sysdesignQuestions, null, 2)
+    );
+    console.log(`  System Design: ${sysdesignQuestions.length} questions`);
+  }
+
   console.log('Quiz generation complete!');
 }
 

@@ -101,6 +101,61 @@ export interface QuizSet {
   questions: QuizQuestion[];
 }
 
+// Learning domain types
+export type LearningDomain = 'owasp' | 'sysdesign';
+export type TopicStatus = 'unread' | 'learned' | 'read-later';
+
+export interface SysDesignTopic {
+  id: string;
+  slug: string;
+  title: string;
+  sections: SysDesignSection[];
+  externalLinks: ExternalLink[];
+}
+
+export interface SysDesignSection {
+  id: string;
+  title: string;
+  contentHtml: string;
+  mermaidDiagrams: string[];
+}
+
+export interface ExternalLink {
+  label: string;
+  url: string;
+  context: string;
+}
+
+export interface SysDesignQuizQuestion {
+  id: string;
+  topicSlug: string;
+  question: string;
+  options: string[];
+  correctIndex: number;
+  explanation: string;
+  difficulty: 'easy' | 'medium' | 'hard';
+}
+
+export interface InterviewSession {
+  id: string;
+  slug: string;
+  title: string;
+  difficulty: 'intermediate' | 'advanced';
+  estimatedMinutes: number;
+  briefing: string;
+  steps: InterviewStep[];
+  finalDiagram: string;
+}
+
+export interface InterviewStep {
+  id: string;
+  title: string;
+  prompt: string;
+  guidanceHtml: string;
+  mermaidDiagram?: string;
+  tips: string[];
+}
+
 // Progress types
 export interface VulnerabilityProgress {
   slug: string;
@@ -119,10 +174,17 @@ export interface QuizAttempt {
   answers: number[];
 }
 
+export interface SysDesignProgress {
+  topics: Record<string, TopicStatus>;
+  quizAttempts: QuizAttempt[];
+  interviewSteps: Record<string, string[]>; // interviewSlug -> completed step IDs
+}
+
 export interface UserProgress {
   schemaVersion: number;
   vulnerabilities: Record<string, VulnerabilityProgress>;
   quizAttempts: QuizAttempt[];
+  sysdesign: SysDesignProgress;
   theme: 'dark' | 'light';
   lastVersion: OwaspVersion;
 }

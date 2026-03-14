@@ -1,0 +1,506 @@
+[
+  {
+    "id": "sd-cache-01",
+    "topicSlug": "caching-strategies",
+    "question": "Your application experiences a thundering herd of requests to the database whenever a popular cache key expires. What is the best solution?",
+    "options": [
+      "Increase database connection pool size",
+      "Use a mutex pattern so only one request rebuilds the cache",
+      "Switch from Redis to Memcached",
+      "Disable caching for popular keys"
+    ],
+    "correctIndex": 1,
+    "explanation": "A mutex (lock) pattern ensures only one request fetches from the database on a cache miss, while other requests wait for the cache to be repopulated. This prevents the stampede effect.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "sd-cache-02",
+    "topicSlug": "caching-strategies",
+    "question": "Which cache population strategy offers the lowest write latency but risks data loss if the cache crashes?",
+    "options": [
+      "Cache-Aside",
+      "Write-Through",
+      "Write-Behind (Write-Back)",
+      "Read-Through"
+    ],
+    "correctIndex": 2,
+    "explanation": "Write-Behind writes only to the cache and asynchronously flushes to the database. This gives the lowest write latency but risks data loss if the cache crashes before flushing.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "sd-cache-03",
+    "topicSlug": "caching-strategies",
+    "question": "What is the key difference between Redis and Memcached?",
+    "options": [
+      "Memcached supports persistence, Redis does not",
+      "Redis is single-threaded, Memcached is multi-threaded, and Redis offers richer data types",
+      "Memcached supports sorted sets and pub/sub",
+      "Redis only supports string values"
+    ],
+    "correctIndex": 1,
+    "explanation": "Redis offers rich data types (lists, sets, sorted sets, streams), optional persistence, and pub/sub. Memcached is simpler and multi-threaded but only supports basic key-value with LRU eviction.",
+    "difficulty": "easy"
+  },
+  {
+    "id": "sd-cache-04",
+    "topicSlug": "caching-strategies",
+    "question": "Users are requesting IDs that don't exist in your system, causing every request to bypass the cache and hit the database. What failure pattern is this?",
+    "options": [
+      "Cache Stampede",
+      "Cache Avalanche",
+      "Cache Penetration",
+      "Cache Poisoning"
+    ],
+    "correctIndex": 2,
+    "explanation": "Cache Penetration occurs when requests for non-existent keys constantly bypass the cache. Solutions include caching null results with short TTLs or using a Bloom filter to reject invalid keys.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "sd-cache-05",
+    "topicSlug": "caching-strategies",
+    "question": "What happens during a Cache Avalanche?",
+    "options": [
+      "A single hot key expires causing a stampede",
+      "Non-existent keys bypass the cache",
+      "A large number of cache keys expire at the same time, flooding the database",
+      "The cache runs out of memory"
+    ],
+    "correctIndex": 2,
+    "explanation": "Cache Avalanche occurs when many keys expire simultaneously, overwhelming the database. Solutions include staggering TTLs with random jitter and implementing circuit breakers.",
+    "difficulty": "easy"
+  },
+  {
+    "id": "sd-cache-06",
+    "topicSlug": "caching-strategies",
+    "question": "In Cache-Aside, what is the 'cold start' problem?",
+    "options": [
+      "The cache uses too much memory on startup",
+      "The cache is empty when the application first starts, causing all requests to hit the database",
+      "The cache connection takes too long to establish",
+      "The database is not ready when the cache starts"
+    ],
+    "correctIndex": 1,
+    "explanation": "Cache-Aside only populates the cache on demand. When the application starts (or after a cache flush), the cache is empty and every request is a miss until data is loaded.",
+    "difficulty": "easy"
+  },
+  {
+    "id": "sd-cache-07",
+    "topicSlug": "caching-strategies",
+    "question": "Which eviction policy is best for workloads with a Zipfian (power-law) access pattern where some items are accessed far more frequently than others?",
+    "options": [
+      "FIFO",
+      "LRU (Least Recently Used)",
+      "LFU (Least Frequently Used)",
+      "Random"
+    ],
+    "correctIndex": 2,
+    "explanation": "LFU tracks access frequency, making it ideal for skewed access patterns where a small number of items are accessed very frequently. LRU only considers recency, not frequency.",
+    "difficulty": "hard"
+  },
+  {
+    "id": "sd-cache-08",
+    "topicSlug": "caching-strategies",
+    "question": "Your API has a write throughput bottleneck. Which caching strategy should you consider?",
+    "options": [
+      "Cache-Aside with long TTL",
+      "Read-Through",
+      "Write-Behind (Write-Back)",
+      "Refresh-Ahead"
+    ],
+    "correctIndex": 2,
+    "explanation": "Write-Behind accepts writes to the cache and asynchronously batches them to the database, dramatically reducing write latency at the cost of accepting eventual consistency.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "sd-ds-01",
+    "topicSlug": "data-structures",
+    "question": "You need to check if a username exists among 100 million registered users with minimal memory usage. Which data structure is best?",
+    "options": [
+      "Hash Map",
+      "B+ Tree",
+      "Bloom Filter",
+      "Trie"
+    ],
+    "correctIndex": 2,
+    "explanation": "A Bloom filter is a space-efficient probabilistic structure that can check set membership using very little memory. It guarantees no false negatives but may have a small false positive rate.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "sd-ds-02",
+    "topicSlug": "data-structures",
+    "question": "Redis sorted sets (ZSET) use which underlying data structure?",
+    "options": [
+      "B+ Tree",
+      "Red-Black Tree",
+      "Skip List",
+      "Hash Table"
+    ],
+    "correctIndex": 2,
+    "explanation": "Redis sorted sets use a skip list, which provides O(log n) operations and is simpler to implement with concurrent access compared to balanced BSTs.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "sd-ds-03",
+    "topicSlug": "data-structures",
+    "question": "What is the key trade-off between LSM-trees (used in Cassandra) and B-Trees (used in PostgreSQL)?",
+    "options": [
+      "LSM-trees use more memory, B-Trees use more disk",
+      "LSM-trees have better write throughput, B-Trees have better read performance",
+      "B-Trees support larger datasets, LSM-trees are limited in size",
+      "LSM-trees require ACID, B-Trees do not"
+    ],
+    "correctIndex": 1,
+    "explanation": "LSM-trees convert random writes to sequential writes, offering superior write throughput. B-Trees provide faster reads since data doesn't need to be merged across multiple levels.",
+    "difficulty": "hard"
+  },
+  {
+    "id": "sd-ds-04",
+    "topicSlug": "data-structures",
+    "question": "HyperLogLog uses approximately how much memory regardless of the number of distinct elements?",
+    "options": [
+      "1 KB",
+      "12 KB",
+      "1 MB",
+      "12 MB"
+    ],
+    "correctIndex": 1,
+    "explanation": "HyperLogLog operates in fixed ~12 KB of space with ~0.81% standard error, making it incredibly space-efficient for cardinality estimation at any scale.",
+    "difficulty": "hard"
+  },
+  {
+    "id": "sd-ds-05",
+    "topicSlug": "data-structures",
+    "question": "In an inverted index, how are AND queries executed?",
+    "options": [
+      "By unioning posting lists",
+      "By intersecting posting lists",
+      "By sorting posting lists",
+      "By hashing posting lists"
+    ],
+    "correctIndex": 1,
+    "explanation": "AND queries find documents containing all terms by intersecting the posting lists for each term. OR queries union the lists instead.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "sd-ds-06",
+    "topicSlug": "data-structures",
+    "question": "When a new node is added to a consistent hashing ring with N existing nodes, approximately how many keys need to be remapped?",
+    "options": [
+      "All keys",
+      "N keys",
+      "K/N keys (where K is total keys)",
+      "No keys need remapping"
+    ],
+    "correctIndex": 2,
+    "explanation": "Consistent hashing only requires remapping approximately K/N keys (the keys between the new node and its predecessor), unlike traditional hashing which would remap almost all keys.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "sd-ds-07",
+    "topicSlug": "data-structures",
+    "question": "Which data structure is optimal for implementing autocomplete functionality?",
+    "options": [
+      "Bloom Filter",
+      "Skip List",
+      "Trie (Prefix Tree)",
+      "B+ Tree"
+    ],
+    "correctIndex": 2,
+    "explanation": "A Trie stores strings by their prefixes, making it optimal for prefix searches and autocomplete. Lookup is O(L) where L is the key length, independent of total keys.",
+    "difficulty": "easy"
+  },
+  {
+    "id": "sd-ds-08",
+    "topicSlug": "data-structures",
+    "question": "In an LSM-Tree, what is the role of the Memtable?",
+    "options": [
+      "It stores data permanently on disk",
+      "It is an in-memory sorted buffer that receives writes before flushing to SSTables",
+      "It manages the compaction process",
+      "It indexes the SSTables for faster reads"
+    ],
+    "correctIndex": 1,
+    "explanation": "The Memtable is a fast, in-memory sorted buffer. Writes land here first, and when it's full, it flushes to an immutable SSTable on disk.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "sd-ds-09",
+    "topicSlug": "data-structures",
+    "question": "A Bloom filter can produce false positives but never false negatives. What does this mean in practice?",
+    "options": [
+      "It might say an element exists when it doesn't, but never says it doesn't exist when it does",
+      "It might say an element doesn't exist when it does, but never says it exists when it doesn't",
+      "It always gives the correct answer",
+      "It sometimes misses elements and sometimes adds phantom elements"
+    ],
+    "correctIndex": 0,
+    "explanation": "A Bloom filter guarantees that if it says 'not in set', the element is definitely not there. But if it says 'in set', there's a small chance it's wrong (false positive).",
+    "difficulty": "easy"
+  },
+  {
+    "id": "sd-db-01",
+    "topicSlug": "db-design",
+    "question": "Which database type is best suited for social graph queries and fraud detection?",
+    "options": [
+      "Relational Database",
+      "Document Store",
+      "Graph Database",
+      "Key-Value Store"
+    ],
+    "correctIndex": 2,
+    "explanation": "Graph databases model data as nodes and edges, making multi-hop relationship traversals efficient at O(log n) instead of the exponential cost of recursive SQL joins.",
+    "difficulty": "easy"
+  },
+  {
+    "id": "sd-db-02",
+    "topicSlug": "db-design",
+    "question": "According to the CAP theorem, which combination does Cassandra prioritize?",
+    "options": [
+      "Consistency + Availability (CA)",
+      "Consistency + Partition Tolerance (CP)",
+      "Availability + Partition Tolerance (AP)",
+      "All three equally"
+    ],
+    "correctIndex": 2,
+    "explanation": "Cassandra is an AP system, prioritizing availability and partition tolerance. It offers tunable consistency (R + W > N for strong consistency) but defaults to eventual consistency.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "sd-db-03",
+    "topicSlug": "db-design",
+    "question": "What does ACID stand for in database transactions?",
+    "options": [
+      "Asynchronous, Consistent, Isolated, Distributed",
+      "Atomicity, Consistency, Isolation, Durability",
+      "Available, Consistent, Integrated, Durable",
+      "Atomic, Concurrent, Isolated, Distributed"
+    ],
+    "correctIndex": 1,
+    "explanation": "ACID stands for Atomicity (all-or-nothing), Consistency (valid state transitions), Isolation (concurrent transactions don't interfere), and Durability (committed data persists).",
+    "difficulty": "easy"
+  },
+  {
+    "id": "sd-db-04",
+    "topicSlug": "db-design",
+    "question": "What is the recommended scaling strategy for relational databases?",
+    "options": [
+      "Shard immediately for maximum scalability",
+      "Scale vertically first, then read replicas, then connection pooling, then sharding as last resort",
+      "Switch to a NoSQL database",
+      "Add more indexes"
+    ],
+    "correctIndex": 1,
+    "explanation": "The recommended approach is vertical scaling → read replicas → connection pooling → sharding. Sharding is a last resort because it breaks SQL joins and adds application complexity.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "sd-db-05",
+    "topicSlug": "db-design",
+    "question": "Which database type is optimized for metrics, monitoring, and telemetry with sequential write patterns?",
+    "options": [
+      "Document Store",
+      "Wide-Column Store",
+      "Time-Series Database",
+      "Graph Database"
+    ],
+    "correctIndex": 2,
+    "explanation": "Time-series databases are append-heavy, optimized for sequential writes and time-based range queries, using delta encoding for compression. Examples: InfluxDB, TimescaleDB, Prometheus.",
+    "difficulty": "easy"
+  },
+  {
+    "id": "sd-db-06",
+    "topicSlug": "db-design",
+    "question": "Your system receives millions of IoT sensor writes per second. Which database type is most appropriate?",
+    "options": [
+      "PostgreSQL with read replicas",
+      "MongoDB",
+      "Cassandra (Wide-Column Store)",
+      "Neo4j"
+    ],
+    "correctIndex": 2,
+    "explanation": "Wide-column stores like Cassandra are optimized for high write throughput across distributed nodes, making them ideal for IoT and write-heavy workloads at massive scale.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "sd-db-07",
+    "topicSlug": "db-design",
+    "question": "What is the main trade-off of document stores like MongoDB compared to relational databases?",
+    "options": [
+      "Document stores cannot handle large datasets",
+      "Reliance on denormalization can lead to update anomalies, and cross-document transactions are expensive",
+      "Document stores don't support indexing",
+      "Document stores require fixed schemas"
+    ],
+    "correctIndex": 1,
+    "explanation": "Document stores trade normalization for schema flexibility. Denormalized data can lead to update anomalies (updating the same data in multiple places), and cross-document transactions are costly.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "sd-db-08",
+    "topicSlug": "db-design",
+    "question": "Which databases are classified as CP (Consistency + Partition Tolerance) systems?",
+    "options": [
+      "Cassandra, DynamoDB, CouchDB",
+      "MongoDB, HBase, Redis Cluster",
+      "Elasticsearch, Solr",
+      "Neo4j, Amazon Neptune"
+    ],
+    "correctIndex": 1,
+    "explanation": "MongoDB, HBase, and Redis Cluster prioritize consistency over availability during network partitions, making them CP systems under the CAP theorem.",
+    "difficulty": "hard"
+  },
+  {
+    "id": "sd-mq-01",
+    "topicSlug": "message-queues",
+    "question": "What is the maximum consumer parallelism within a Kafka consumer group?",
+    "options": [
+      "Equal to the number of brokers",
+      "Equal to the number of topics",
+      "Equal to the number of partitions",
+      "Unlimited"
+    ],
+    "correctIndex": 2,
+    "explanation": "In Kafka, each partition can only be consumed by one consumer within a group. So maximum parallelism equals the number of partitions.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "sd-mq-02",
+    "topicSlug": "message-queues",
+    "question": "What is the key difference between a message queue and an event stream regarding message lifetime?",
+    "options": [
+      "Queues retain messages longer than streams",
+      "Queue messages are deleted after ACK; stream events are retained for a configurable period",
+      "Both delete messages after ACK",
+      "Streams delete messages immediately"
+    ],
+    "correctIndex": 1,
+    "explanation": "Queue messages are removed after acknowledgment, while event streams (like Kafka) retain events for a configurable period, enabling replay and multiple independent consumers.",
+    "difficulty": "easy"
+  },
+  {
+    "id": "sd-mq-03",
+    "topicSlug": "message-queues",
+    "question": "What is the purpose of the Outbox Pattern?",
+    "options": [
+      "To implement exactly-once delivery in Kafka",
+      "To guarantee at-least-once delivery by writing to DB and outbox in a single transaction",
+      "To prioritize messages in a queue",
+      "To implement backpressure"
+    ],
+    "correctIndex": 1,
+    "explanation": "The Outbox Pattern writes to the database and an outbox table in a single transaction. A separate relay publishes outbox rows to the queue, guaranteeing at-least-once delivery even if the broker is down.",
+    "difficulty": "hard"
+  },
+  {
+    "id": "sd-mq-04",
+    "topicSlug": "message-queues",
+    "question": "How do you prevent double-processing of messages in a Kafka consumer?",
+    "options": [
+      "Use FIFO queues",
+      "Increase the number of partitions",
+      "Use idempotent consumers with deduplication keys",
+      "Use at-most-once delivery"
+    ],
+    "correctIndex": 2,
+    "explanation": "Idempotent consumers combined with deduplication keys prevent double-processing. For Kafka, store the last processed offset in the same DB transaction as business logic.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "sd-mq-05",
+    "topicSlug": "message-queues",
+    "question": "When should you choose RabbitMQ over Kafka?",
+    "options": [
+      "When you need high-throughput event streaming",
+      "When you need complex routing logic, priority queues, or task-queue semantics",
+      "When you need message replay capability",
+      "When you need multiple independent consumer groups"
+    ],
+    "correctIndex": 1,
+    "explanation": "RabbitMQ excels with flexible exchange types (Direct, Fanout, Topic, Headers), manual ACKs, and built-in priority queues — features Kafka doesn't natively support.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "sd-mq-06",
+    "topicSlug": "message-queues",
+    "question": "What is the difference between AWS SQS Standard and FIFO queues?",
+    "options": [
+      "Standard is cheaper but has no ordering guarantees; FIFO has strict ordering but lower throughput",
+      "FIFO supports more throughput than Standard",
+      "Standard queues support exactly-once delivery",
+      "There is no practical difference"
+    ],
+    "correctIndex": 0,
+    "explanation": "SQS Standard offers near-unlimited throughput with best-effort ordering and at-least-once delivery. FIFO provides exactly-once processing and strict ordering but at lower throughput limits.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "sd-mq-07",
+    "topicSlug": "message-queues",
+    "question": "In the Saga pattern, what is the difference between Choreography and Orchestration?",
+    "options": [
+      "Choreography uses a central controller; Orchestration is decentralized",
+      "Choreography is decentralized (services react to events); Orchestration uses a central controller",
+      "Both are identical in implementation",
+      "Choreography is synchronous; Orchestration is asynchronous"
+    ],
+    "correctIndex": 1,
+    "explanation": "Saga Choreography is decentralized — each service reacts to events and triggers the next step. Orchestration uses a central controller that issues commands to each service.",
+    "difficulty": "hard"
+  },
+  {
+    "id": "sd-df-01",
+    "topicSlug": "decision-framework",
+    "question": "You're designing a system that receives millions of IoT sensor writes per second. Which database should you choose?",
+    "options": [
+      "PostgreSQL",
+      "MongoDB",
+      "Cassandra",
+      "Neo4j"
+    ],
+    "correctIndex": 2,
+    "explanation": "Cassandra (wide-column store) is optimized for massive write throughput with linear horizontal scalability, making it ideal for IoT workloads.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "sd-df-02",
+    "topicSlug": "decision-framework",
+    "question": "Your system needs event replay capability and an audit log. Should you use a message queue or an event stream?",
+    "options": [
+      "Message Queue (RabbitMQ)",
+      "Event Stream (Kafka)",
+      "Either would work equally well",
+      "Neither — use a database"
+    ],
+    "correctIndex": 1,
+    "explanation": "Event streams like Kafka retain events for a configurable period, enabling replay and audit. Message queues delete messages after ACK, making replay impossible.",
+    "difficulty": "easy"
+  },
+  {
+    "id": "sd-df-03",
+    "topicSlug": "decision-framework",
+    "question": "What is the simplest caching strategy for a read-heavy API?",
+    "options": [
+      "Write-Behind with batching",
+      "Refresh-Ahead with predictive prefetching",
+      "Cache-Aside with a generous TTL",
+      "Write-Through with immediate consistency"
+    ],
+    "correctIndex": 2,
+    "explanation": "Cache-Aside with a generous TTL is the simplest and most common strategy for read-heavy workloads. It only caches requested data and a cache failure won't break reads.",
+    "difficulty": "easy"
+  },
+  {
+    "id": "sd-df-04",
+    "topicSlug": "decision-framework",
+    "question": "What is the 'Golden Rule' for system design interview trade-offs?",
+    "options": [
+      "Always choose the most scalable solution",
+      "Justify choices with explicit trade-offs: 'I chose X because it gives us Y, but this means we accept Z'",
+      "Start with the most complex architecture",
+      "Always prioritize consistency over availability"
+    ],
+    "correctIndex": 1,
+    "explanation": "The Golden Rule is to justify choices with explicit trade-offs. Start simple, only add complexity when pushed on scale or failure scenarios, and frame answers as collaborative conversations.",
+    "difficulty": "easy"
+  }
+]

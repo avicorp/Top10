@@ -1,6 +1,6 @@
 import { Link, useLocation } from 'react-router-dom';
 import { useProgress } from '../../context/ProgressContext';
-import type { OwaspVersion } from '../../types';
+import type { LearningDomain, OwaspVersion } from '../../types';
 
 const versions: { label: string; version: OwaspVersion }[] = [
   { label: '2017', version: '2017' },
@@ -8,7 +8,7 @@ const versions: { label: string; version: OwaspVersion }[] = [
   { label: '2025', version: '2025' },
 ];
 
-export default function Header({ onToggleSidebar }: { onToggleSidebar: () => void }) {
+export default function Header({ onToggleSidebar, domain = 'owasp' }: { onToggleSidebar: () => void; domain?: LearningDomain }) {
   const location = useLocation();
   const { progress, dispatch } = useProgress();
 
@@ -29,50 +29,90 @@ export default function Header({ onToggleSidebar }: { onToggleSidebar: () => voi
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
             </svg>
           </button>
-          <Link to="/" className="flex items-center gap-2 font-bold text-lg">
-            <span className="text-blue-500">OWASP</span>
-            <span className="dark:text-white text-slate-900">Top 10</span>
-            <span className="text-xs bg-blue-500/20 text-blue-400 px-2 py-0.5 rounded-full">Learn</span>
+          <Link to="/" className="flex items-center gap-2 font-bold text-lg" title="Back to domain selector">
+            <svg className="w-4 h-4 dark:text-slate-400 text-slate-500" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
+            </svg>
           </Link>
+          {domain === 'owasp' ? (
+            <Link to="/owasp" className="flex items-center gap-2 font-bold text-lg">
+              <span className="text-blue-500">OWASP</span>
+              <span className="dark:text-white text-slate-900">Top 10</span>
+              <span className="text-xs bg-blue-500/20 text-blue-400 px-2 py-0.5 rounded-full">Learn</span>
+            </Link>
+          ) : (
+            <Link to="/sysdesign" className="flex items-center gap-2 font-bold text-lg">
+              <span className="text-purple-500">System</span>
+              <span className="dark:text-white text-slate-900">Design</span>
+              <span className="text-xs bg-purple-500/20 text-purple-400 px-2 py-0.5 rounded-full">Learn</span>
+            </Link>
+          )}
         </div>
 
-        <nav className="flex items-center gap-1" aria-label="Version navigation">
-          {versions.map(({ label, version }) => {
-            const isActive = location.pathname.includes(`/version/${version}`);
-            return (
+        <nav className="flex items-center gap-1" aria-label={domain === 'owasp' ? 'Version navigation' : 'System design navigation'}>
+          {domain === 'owasp' ? (
+            <>
+              {versions.map(({ label, version }) => {
+                const isActive = location.pathname.includes(`/version/${version}`);
+                return (
+                  <Link
+                    key={version}
+                    to={`/owasp/version/${version}`}
+                    className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
+                      isActive
+                        ? 'bg-blue-500 text-white'
+                        : 'dark:text-slate-300 text-slate-600 dark:hover:bg-slate-700 hover:bg-slate-200'
+                    }`}
+                  >
+                    {label}
+                  </Link>
+                );
+              })}
               <Link
-                key={version}
-                to={`/version/${version}`}
+                to="/owasp/quiz"
                 className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
-                  isActive
+                  location.pathname.startsWith('/owasp/quiz')
+                    ? 'bg-amber-500 text-white'
+                    : 'dark:text-slate-300 text-slate-600 dark:hover:bg-slate-700 hover:bg-slate-200'
+                }`}
+              >
+                Quiz
+              </Link>
+              <Link
+                to="/owasp/compare"
+                className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
+                  location.pathname === '/owasp/compare'
                     ? 'bg-blue-500 text-white'
                     : 'dark:text-slate-300 text-slate-600 dark:hover:bg-slate-700 hover:bg-slate-200'
                 }`}
               >
-                {label}
+                Compare
               </Link>
-            );
-          })}
-          <Link
-            to="/quiz"
-            className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
-              location.pathname.startsWith('/quiz')
-                ? 'bg-amber-500 text-white'
-                : 'dark:text-slate-300 text-slate-600 dark:hover:bg-slate-700 hover:bg-slate-200'
-            }`}
-          >
-            Quiz
-          </Link>
-          <Link
-            to="/compare"
-            className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
-              location.pathname === '/compare'
-                ? 'bg-blue-500 text-white'
-                : 'dark:text-slate-300 text-slate-600 dark:hover:bg-slate-700 hover:bg-slate-200'
-            }`}
-          >
-            Compare
-          </Link>
+            </>
+          ) : (
+            <>
+              <Link
+                to="/sysdesign/quiz"
+                className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
+                  location.pathname.startsWith('/sysdesign/quiz')
+                    ? 'bg-amber-500 text-white'
+                    : 'dark:text-slate-300 text-slate-600 dark:hover:bg-slate-700 hover:bg-slate-200'
+                }`}
+              >
+                Quiz
+              </Link>
+              <Link
+                to="/sysdesign/interview"
+                className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
+                  location.pathname.startsWith('/sysdesign/interview')
+                    ? 'bg-purple-500 text-white'
+                    : 'dark:text-slate-300 text-slate-600 dark:hover:bg-slate-700 hover:bg-slate-200'
+                }`}
+              >
+                Interviews
+              </Link>
+            </>
+          )}
           <Link
             to="/progress"
             className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${

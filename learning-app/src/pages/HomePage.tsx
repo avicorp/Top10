@@ -34,7 +34,7 @@ function VersionCard({ version, color, description }: { version: OwaspVersion; c
 
   return (
     <Link
-      to={`/version/${version}`}
+      to={`/owasp/version/${version}`}
       className={`block rounded-xl border bg-gradient-to-b p-6 transition-all duration-200 hover:scale-[1.02] ${colorMap[color]}`}
     >
       <div className="flex items-start justify-between mb-4">
@@ -98,7 +98,7 @@ export default function HomePage() {
 
       <div className="grid sm:grid-cols-3 gap-4 mb-12">
         <Link
-          to="/quiz"
+          to="/owasp/quiz"
           className="rounded-xl dark:bg-slate-800 bg-white border dark:border-slate-700 border-slate-200 p-6 hover:border-amber-500/50 transition-colors"
         >
           <div className="text-3xl mb-2">&#x1F9E0;</div>
@@ -108,7 +108,7 @@ export default function HomePage() {
           </p>
         </Link>
         <Link
-          to="/compare"
+          to="/owasp/compare"
           className="rounded-xl dark:bg-slate-800 bg-white border dark:border-slate-700 border-slate-200 p-6 hover:border-blue-500/50 transition-colors"
         >
           <div className="text-3xl mb-2">&#x1F504;</div>
@@ -132,16 +132,16 @@ export default function HomePage() {
       <div className="rounded-xl dark:bg-slate-800/50 bg-white border dark:border-slate-700 border-slate-200 p-6">
         <h2 className="text-lg font-semibold mb-3">Quick Start</h2>
         <div className="grid sm:grid-cols-2 gap-3 text-sm">
-          <Link to="/version/2025" className="flex items-center gap-2 dark:text-slate-300 text-slate-600 dark:hover:text-white hover:text-slate-900 transition-colors">
+          <Link to="/owasp/version/2025" className="flex items-center gap-2 dark:text-slate-300 text-slate-600 dark:hover:text-white hover:text-slate-900 transition-colors">
             <span className="text-blue-500">&#x2192;</span> Start with the latest 2025 edition
           </Link>
-          <Link to="/quiz/2025" className="flex items-center gap-2 dark:text-slate-300 text-slate-600 dark:hover:text-white hover:text-slate-900 transition-colors">
+          <Link to="/owasp/quiz/2025" className="flex items-center gap-2 dark:text-slate-300 text-slate-600 dark:hover:text-white hover:text-slate-900 transition-colors">
             <span className="text-amber-500">&#x2192;</span> Jump straight to a quiz
           </Link>
-          <Link to="/compare" className="flex items-center gap-2 dark:text-slate-300 text-slate-600 dark:hover:text-white hover:text-slate-900 transition-colors">
+          <Link to="/owasp/compare" className="flex items-center gap-2 dark:text-slate-300 text-slate-600 dark:hover:text-white hover:text-slate-900 transition-colors">
             <span className="text-emerald-500">&#x2192;</span> See what changed between versions
           </Link>
-          <Link to="/version/2025/a05-2025-injection" className="flex items-center gap-2 dark:text-slate-300 text-slate-600 dark:hover:text-white hover:text-slate-900 transition-colors">
+          <Link to="/owasp/version/2025/a05-2025-injection" className="flex items-center gap-2 dark:text-slate-300 text-slate-600 dark:hover:text-white hover:text-slate-900 transition-colors">
             <span className="text-red-500">&#x2192;</span> Study Injection vulnerabilities
           </Link>
         </div>

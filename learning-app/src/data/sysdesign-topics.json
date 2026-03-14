@@ -1,0 +1,265 @@
+[
+  {
+    "id": "caching",
+    "slug": "caching-strategies",
+    "title": "Caching Strategies",
+    "sections": [
+      {
+        "id": "cache-placement-tiers",
+        "title": "Cache Placement Tiers",
+        "contentHtml": "<p>Where you place the cache impacts latency, data consistency, and architectural complexity. A typical data flow pattern routes requests through a CDN, to an API Gateway, into an L1 in-process cache, then an L2 distributed cache (like Redis), and finally to the database.</p>\n<h3>Client-Side</h3>\n<ul>\n<li><strong>Browser Cache</strong>: Built directly into web browsers and utilizes HTTP headers like <code>Cache-Control</code>, <code>ETag</code>, and <code>Last-Modified</code>. It is completely free to use.</li>\n<li><strong>CDN Edge Cache</strong>: Content Delivery Networks (like Cloudflare or CloudFront) push static and dynamic assets to global edge servers, delivering single-digit millisecond latency.</li>\n</ul>\n<h3>In-Process / Local</h3>\n<ul>\n<li>In-memory maps (like Guava Cache for Java or lru-cache for Node.js) that offer the fastest possible retrieval because there is no network hop.</li>\n<li><strong>Trade-off</strong>: The cache is not shared across application instances, meaning each pod or server maintains its own potentially stale copy of the data.</li>\n</ul>\n<h3>Distributed Cache</h3>\n<ul>\n<li><strong>Redis</strong>: The most popular choice, offering cluster modes for horizontal scaling, optional persistence, and rich data types.</li>\n<li><strong>Memcached</strong>: A simpler, multi-threaded cache that operates strictly on a Least Recently Used (LRU) basis. It lacks persistence, sorted sets, and pub/sub capabilities.</li>\n<li><strong>Hazelcast</strong>: An in-memory data grid popular in the Java ecosystem that allows computing near the data.</li>\n</ul>\n<hr>",
+        "mermaidDiagrams": [
+          "graph LR\n    Client[Client] --> CDN[CDN Edge]\n    CDN --> GW[API Gateway]\n    GW --> L1[L1 In-Process Cache]\n    L1 --> L2[L2 Redis/Memcached]\n    L2 --> DB[(Database)]\n    style Client fill:#3b82f6,color:#fff\n    style CDN fill:#8b5cf6,color:#fff\n    style L1 fill:#f59e0b,color:#fff\n    style L2 fill:#ef4444,color:#fff\n    style DB fill:#22c55e,color:#fff"
+        ]
+      },
+      {
+        "id": "cache-population-strategies",
+        "title": "Cache Population Strategies",
+        "contentHtml": "<p>These strategies dictate how and when data is written to the cache.</p>\n<h3>Cache-Aside (Lazy Loading)</h3>\n<p>The application checks the cache first; if there is a miss, it reads from the database and then populates the cache.</p>\n<ul>\n<li>This is the most common pattern.</li>\n<li>It only caches requested data, and a cache failure won't break read operations.</li>\n<li>However, it suffers from a \"cold-start\" penalty and can cause a thundering herd problem when hot keys expire.</li>\n</ul>\n<h3>Write-Through</h3>\n<p>Every write operation updates both the cache and the database synchronously.</p>\n<ul>\n<li>Ensures the cache is never stale.</li>\n<li>However, it doubles write latency and may end up caching data that is never actually read.</li>\n</ul>\n<h3>Write-Behind (Write-Back)</h3>\n<p>The application writes strictly to the cache, which then asynchronously flushes the data to the database after a delay.</p>\n<ul>\n<li>Offers the lowest write latency and allows for batched database writes.</li>\n<li>Major risk is data loss if the cache crashes before flushing, leading to temporary database inconsistency.</li>\n</ul>\n<h3>Read-Through</h3>\n<p>The cache sits directly in front of the database and manages cache misses itself, allowing the application to only communicate with the cache layer.</p>\n<ul>\n<li>Simplifies application code.</li>\n<li>However, the initial read is always slow, and the cache library must be compatible with your data sources.</li>\n</ul>\n<h3>Refresh-Ahead</h3>\n<p>The cache proactively refreshes its entries before they expire based on predicted access patterns.</p>\n<ul>\n<li>Provides zero miss latency for frequently accessed data.</li>\n<li>Complex to implement and risks caching unread data.</li>\n</ul>\n<hr>",
+        "mermaidDiagrams": [
+          "sequenceDiagram\n    participant App\n    participant Cache\n    participant DB\n    Note over App,DB: Cache Miss Flow\n    App->>Cache: GET key\n    Cache-->>App: null (miss)\n    App->>DB: SELECT * FROM ...\n    DB-->>App: data\n    App->>Cache: SET key = data\n    Note over App,DB: Cache Hit Flow\n    App->>Cache: GET key\n    Cache-->>App: data (hit)",
+          "graph TB\n    subgraph \"Write-Through (Sync)\"\n        WT_App[App] -->|write| WT_Cache[Cache]\n        WT_Cache -->|sync write| WT_DB[(DB)]\n    end\n    subgraph \"Write-Behind (Async)\"\n        WB_App[App] -->|write| WB_Cache[Cache]\n        WB_Cache -.->|async flush| WB_DB[(DB)]\n    end"
+        ]
+      },
+      {
+        "id": "eviction-policies",
+        "title": "Eviction Policies",
+        "contentHtml": "<p>When a cache fills up, it needs rules to decide which data to remove.</p>\n<ul>\n<li><strong>LRU (Least Recently Used)</strong>: Evicts the item that hasn't been accessed for the longest period; the standard default for general workloads.</li>\n<li><strong>LFU (Least Frequently Used)</strong>: Evicts the item with the lowest total number of accesses, ideal for skewed or Zipfian access patterns.</li>\n<li><strong>FIFO (First In First Out)</strong>: Evicts the oldest item inserted, regardless of how often it's accessed.</li>\n<li><strong>TTL (Time-To-Live)</strong>: Automatically evicts items after a fixed amount of time has passed since insertion.</li>\n<li><strong>Random</strong>: Evicts a random item, providing a very low-overhead approximation of LRU.</li>\n<li><strong>MRU (Most Recently Used)</strong>: Evicts the most recently accessed item, useful for large sequential reads or cyclic scans.</li>\n</ul>\n<hr>",
+        "mermaidDiagrams": []
+      },
+      {
+        "id": "cache-failure-patterns",
+        "title": "Cache Failure Patterns",
+        "contentHtml": "<p>Mentioning these failure patterns unprompted during an interview is a strong indicator of real-world production experience.</p>\n<h3>Cache Stampede (Thundering Herd)</h3>\n<p>Occurs when a highly popular key expires, causing many concurrent requests to miss the cache simultaneously and all hit the database at once.</p>\n<ul>\n<li><strong>Solutions</strong>: Implement a mutex pattern (only one request rebuilds the cache while others wait), use probabilistic early recomputation, or add random TTL jitter to spread out expirations.</li>\n</ul>\n<h3>Cache Penetration</h3>\n<p>Happens when users request keys that do not exist, causing the requests to constantly bypass the cache and overwhelm the database.</p>\n<ul>\n<li><strong>Solutions</strong>: Cache null or empty results with a short TTL, or implement a Bloom filter to reject invalid keys outright.</li>\n</ul>\n<h3>Cache Avalanche</h3>\n<p>Occurs when a large number of cache keys expire at the exact same time, flooding the database with requests.</p>\n<ul>\n<li><strong>Solutions</strong>: Stagger your TTLs using random jitter and implement circuit breakers on your database connections.</li>\n</ul>\n<hr>",
+        "mermaidDiagrams": [
+          "sequenceDiagram\n    participant R1 as Request 1\n    participant R2 as Request 2\n    participant R3 as Request 3\n    participant Cache\n    participant DB\n    Note over Cache: Hot key expires!\n    R1->>Cache: GET (miss)\n    R2->>Cache: GET (miss)\n    R3->>Cache: GET (miss)\n    R1->>DB: query\n    R2->>DB: query\n    R3->>DB: query\n    Note over DB: Overloaded!\n    Note over Cache,DB: Fix: Mutex lock\n    R1->>Cache: GET (miss) + acquire lock\n    R2->>Cache: GET (miss) → wait\n    R1->>DB: query\n    DB-->>R1: data\n    R1->>Cache: SET\n    R2->>Cache: GET (hit)"
+        ]
+      },
+      {
+        "id": "distributed-cache-internals",
+        "title": "Distributed Cache Internals",
+        "contentHtml": "<ul>\n<li><strong>Consistent Hashing</strong>: A technique used to distribute keys across multiple cache nodes. If a node is added or removed, it only requires remapping approximately <code>1/N</code> of the keys, rather than reshuffling the entire cache.</li>\n<li><strong>Redis Cluster vs. Sentinel</strong>: Redis Cluster divides data across 16,384 hash slots with automatic rebalancing, requiring at least 3 primary nodes. Redis Sentinel provides High Availability (HA) without clustering by monitoring the primary node and promoting a replica if a failure occurs.</li>\n<li><strong>Event-based Invalidation</strong>: When the database is written to, an invalidation event is published, prompting consumers to delete the corresponding stale cache keys.</li>\n</ul>",
+        "mermaidDiagrams": []
+      }
+    ],
+    "externalLinks": []
+  },
+  {
+    "id": "data-structures",
+    "slug": "data-structures",
+    "title": "Data Structures for System Design",
+    "sections": [
+      {
+        "id": "consistent-hashing",
+        "title": "Consistent Hashing",
+        "contentHtml": "<ul>\n<li>Hashes both data keys and server nodes onto the same virtual ring.</li>\n<li>Each key is assigned to the first server clockwise from its hash position.</li>\n<li>When adding a node, only the keys between the new node and its predecessor are remapped, moving just O(K/N) keys rather than reshuffling everything.</li>\n<li>Virtual nodes (vnodes) assign multiple ring positions to a single physical node for better load balancing.</li>\n<li>Used by Amazon DynamoDB, Apache Cassandra, Memcached, HAProxy, and CDN routing.</li>\n</ul>\n<hr>",
+        "mermaidDiagrams": [
+          "graph TD\n    subgraph \"Consistent Hashing Ring\"\n        direction TB\n        Ring[\"Hash Ring (0 to 2^32)\"]\n        N1[\"Node A (pos: 1000)\"]\n        N2[\"Node B (pos: 4000)\"]\n        N3[\"Node C (pos: 7000)\"]\n        K1[\"Key X (hash: 500) → Node A\"]\n        K2[\"Key Y (hash: 2500) → Node B\"]\n        K3[\"Key Z (hash: 5500) → Node C\"]\n    end\n    Ring --- N1 & N2 & N3\n    K1 -.-> N1\n    K2 -.-> N2\n    K3 -.-> N3"
+        ]
+      },
+      {
+        "id": "bloom-filter",
+        "title": "Bloom Filter",
+        "contentHtml": "<ul>\n<li>A space-efficient probabilistic set structure that answers \"is X in the set?\".</li>\n<li>Guarantees no false negatives, but has a configurable false positive rate (e.g., ~1%).</li>\n<li>Uses k hash functions to map an element to k positions in a bit array. Lookups check if all k bits are set.</li>\n<li>A basic Bloom filter does not support deletes; use a Counting Bloom Filter or a Cuckoo Filter instead.</li>\n<li>Frequently used to prevent cache penetration and to check membership in massive sets (100M+ items) using very little memory.</li>\n</ul>\n<hr>",
+        "mermaidDiagrams": [
+          "graph LR\n    subgraph \"Bloom Filter Insert\"\n        Element[Element X] --> H1[Hash₁] & H2[Hash₂] & H3[Hash₃]\n        H1 --> B2[Bit 2 = 1]\n        H2 --> B5[Bit 5 = 1]\n        H3 --> B9[Bit 9 = 1]\n    end\n    subgraph \"Bit Array\"\n        BA[\"0|0|1|0|0|1|0|0|0|1|0|0\"]\n    end"
+        ]
+      },
+      {
+        "id": "hyperloglog",
+        "title": "HyperLogLog",
+        "contentHtml": "<ul>\n<li>A probabilistic cardinality estimator used to count distinct elements.</li>\n<li>Solves the problem of counting unique visitors or daily active users when an exact count is not strictly necessary.</li>\n<li>Operates in O(1) space (fixed ~12 KB) with a standard error of ~0.81%, meaning it takes the same memory to count 1 million distinct IDs as 1 billion.</li>\n<li>Redis utilizes this via <code>PFADD</code> and <code>PFCOUNT</code> commands.</li>\n</ul>\n<hr>",
+        "mermaidDiagrams": []
+      },
+      {
+        "id": "skip-list",
+        "title": "Skip List",
+        "contentHtml": "<ul>\n<li>A probabilistic sorted data structure providing O(log n) average time for search, insert, and delete operations.</li>\n<li>Utilizes layered linked lists where the upper layers act as express lanes for fast navigation.</li>\n<li>Much simpler to implement and make lock-free for concurrent access compared to balanced Binary Search Trees.</li>\n<li>The underlying structure used by Redis Sorted Sets (ZSET) for leaderboards and sliding-window rate limiting.</li>\n</ul>\n<hr>",
+        "mermaidDiagrams": [
+          "graph LR\n    subgraph \"Skip List Layers\"\n        H3[\"Head L3\"] --> N7_3[\"7\"] --> T3[\"Tail\"]\n        H2[\"Head L2\"] --> N3_2[\"3\"] --> N7_2[\"7\"] --> N12_2[\"12\"] --> T2[\"Tail\"]\n        H1[\"Head L1\"] --> N1_1[\"1\"] --> N3_1[\"3\"] --> N5_1[\"5\"] --> N7_1[\"7\"] --> N9_1[\"9\"] --> N12_1[\"12\"] --> T1[\"Tail\"]\n    end\n    style H3 fill:#ef4444,color:#fff\n    style H2 fill:#f59e0b,color:#fff\n    style H1 fill:#22c55e,color:#fff"
+        ]
+      },
+      {
+        "id": "b-tree",
+        "title": "B+ Tree",
+        "contentHtml": "<ul>\n<li>A self-balancing tree where each node holds multiple keys and child pointers.</li>\n<li>The default index structure for every major RDBMS.</li>\n<li>All data lives exclusively in the leaf nodes, and these leaf nodes are linked together as a doubly-linked list to optimize range scans.</li>\n<li>The backbone of PostgreSQL, MySQL, and filesystem structures like ext4 and APFS.</li>\n</ul>\n<hr>",
+        "mermaidDiagrams": [
+          "graph TD\n    Root[\"[30 | 60]\"] --> N1[\"[10 | 20]\"] & N2[\"[40 | 50]\"] & N3[\"[70 | 80]\"]\n    N1 --> L1[\"⟨5,8⟩\"] & L2[\"⟨12,15,18⟩\"] & L3[\"⟨22,25,28⟩\"]\n    N2 --> L4[\"⟨32,35⟩\"] & L5[\"⟨42,45⟩\"] & L6[\"⟨52,55⟩\"]\n    N3 --> L7[\"⟨62,65⟩\"] & L8[\"⟨72,75⟩\"] & L9[\"⟨82,85,90⟩\"]\n    L1 ---|linked| L2 ---|linked| L3 ---|linked| L4\n    style Root fill:#3b82f6,color:#fff\n    style N1 fill:#8b5cf6,color:#fff\n    style N2 fill:#8b5cf6,color:#fff\n    style N3 fill:#8b5cf6,color:#fff"
+        ]
+      },
+      {
+        "id": "lsm-tree-log-structured-merge-tree",
+        "title": "LSM-Tree (Log-Structured Merge-Tree)",
+        "contentHtml": "<ul>\n<li>Highly optimized for write-heavy workloads, converting random writes into sequential writes.</li>\n<li>Writes first land in an extremely fast, in-memory sorted buffer called a <strong>Memtable</strong>.</li>\n<li>Once the Memtable is full, it flushes to an immutable sorted file on disk known as an <strong>SSTable</strong>.</li>\n<li>A background compaction process merges these SSTables.</li>\n<li>Reads check the Memtable first, then SSTables from newest to oldest, relying on Bloom filters to skip irrelevant files.</li>\n<li><strong>Interview Tip</strong>: The core storage trade-off: LSM-trees (Cassandra) provide better write throughput, whereas B-Trees (PostgreSQL) provide better read performance.</li>\n</ul>\n<hr>",
+        "mermaidDiagrams": [
+          "graph TD\n    Write[Write] --> MT[Memtable - in memory]\n    MT -->|full| SS1[SSTable L0]\n    MT -->|full| SS2[SSTable L0]\n    SS1 & SS2 -->|compaction| SS3[SSTable L1]\n    SS3 -->|compaction| SS4[SSTable L2]\n    Read[Read] --> MT\n    Read -.-> SS1\n    Read -.-> SS3\n    style MT fill:#22c55e,color:#fff\n    style Write fill:#3b82f6,color:#fff\n    style Read fill:#f59e0b,color:#fff"
+        ]
+      },
+      {
+        "id": "trie-prefix-tree",
+        "title": "Trie (Prefix Tree)",
+        "contentHtml": "<ul>\n<li>A tree where each path from the root to a leaf represents a string.</li>\n<li>Optimal for prefix searches, autocomplete functions, and IP routing.</li>\n<li>Lookup and insert complexity is O(L), where L is the length of the key, independent of the total number of keys stored.</li>\n<li>A Radix Tree is a compressed version that merges single-child chains, frequently used in HTTP routers.</li>\n</ul>\n<hr>",
+        "mermaidDiagrams": []
+      },
+      {
+        "id": "inverted-index",
+        "title": "Inverted Index",
+        "contentHtml": "<ul>\n<li>Maps terms (words) to the list of documents that contain them.</li>\n<li>The core data structure behind all search engines, such as Elasticsearch and Apache Solr.</li>\n<li>Query execution works by intersecting posting lists for AND queries, or unioning them for OR queries.</li>\n</ul>",
+        "mermaidDiagrams": []
+      }
+    ],
+    "externalLinks": []
+  },
+  {
+    "id": "db-design",
+    "slug": "db-design",
+    "title": "Database Design",
+    "sections": [
+      {
+        "id": "relational-databases-rdbms",
+        "title": "Relational Databases (RDBMS)",
+        "contentHtml": "<p>Relational databases store data in structured tables using predefined schemas, linking data through relationships called foreign keys. They provide strong consistency and are fully ACID compliant.</p>\n<ul>\n<li><strong>ACID</strong>: Stands for Atomicity, Consistency, Isolation, and Durability, which guarantees that transactions are processed in an \"all-or-nothing\" manner.</li>\n<li><strong>SQL</strong>: The standard language used to interact with RDBMS, supporting complex joins, aggregations, window functions, and transactions.</li>\n<li><strong>Normalization</strong>: The process of organizing data to reduce duplication and enforce referential integrity.</li>\n<li><strong>Scaling Strategy</strong>: The standard approach is to scale vertically first, followed by adding read replicas. Horizontal sharding should be a last resort as it breaks SQL joins and adds application-layer complexity.</li>\n<li><strong>Primary Examples</strong>: PostgreSQL (known for JSONB support and extensions like PostGIS), MySQL (battle-tested in LAMP stacks), and Amazon Aurora (offers up to 5x throughput with managed failover).</li>\n</ul>\n<hr>",
+        "mermaidDiagrams": [
+          "graph TD\n    Start[\"What are your requirements?\"] --> ACID{\"Need ACID + relationships?\"}\n    ACID -->|Yes| RDB[\"Relational DB<br/>(PostgreSQL, MySQL)\"]\n    ACID -->|No| Schema{\"Schema flexible?\"}\n    Schema -->|Yes| DOC[\"Document Store<br/>(MongoDB)\"]\n    Schema -->|No| WriteHeavy{\"Write-heavy?\"}\n    WriteHeavy -->|Yes| WC[\"Wide-Column<br/>(Cassandra)\"]\n    WriteHeavy -->|No| Relationships{\"Graph queries?\"}\n    Relationships -->|Yes| Graph[\"Graph DB<br/>(Neo4j)\"]\n    Relationships -->|No| TimeSeries{\"Time-ordered data?\"}\n    TimeSeries -->|Yes| TS[\"Time-Series DB<br/>(InfluxDB)\"]\n    TimeSeries -->|No| Search{\"Full-text search?\"}\n    Search -->|Yes| ES[\"Search Engine<br/>(Elasticsearch)\"]\n    style Start fill:#3b82f6,color:#fff\n    style RDB fill:#22c55e,color:#fff\n    style DOC fill:#8b5cf6,color:#fff\n    style WC fill:#f59e0b,color:#fff\n    style Graph fill:#ec4899,color:#fff\n    style TS fill:#06b6d4,color:#fff\n    style ES fill:#ef4444,color:#fff",
+          "graph LR\n    V[\"Vertical Scale\"] --> RR[\"Read Replicas\"]\n    RR --> CP[\"Connection Pooling\"]\n    CP --> SH[\"Sharding\"]\n    style V fill:#22c55e,color:#fff\n    style RR fill:#3b82f6,color:#fff\n    style CP fill:#f59e0b,color:#fff\n    style SH fill:#ef4444,color:#fff"
+        ]
+      },
+      {
+        "id": "document-stores",
+        "title": "Document Stores",
+        "contentHtml": "<p>Document stores are schema-flexible databases that save data as semi-structured JSON or BSON documents. Every document within a collection can have completely different fields.</p>\n<ul>\n<li><strong>Use Cases</strong>: Ideal for hierarchical data, frequently evolving schemas, or when the shape of entities varies (like content catalogs or user profiles).</li>\n<li><strong>Trade-offs</strong>: Relying on denormalization can lead to update anomalies. Cross-document transactions are also expensive.</li>\n<li><strong>Primary Examples</strong>: MongoDB (features a rich aggregation pipeline and built-in sharding) and Couchbase (includes an in-memory caching layer for low-latency reads, making it good for mobile-sync workloads).</li>\n</ul>\n<hr>",
+        "mermaidDiagrams": []
+      },
+      {
+        "id": "key-value-stores",
+        "title": "Key-Value Stores",
+        "contentHtml": "<p>This is the simplest database model, functioning as a distributed hash map. They offer extremely fast lookups but have very limited querying capabilities.</p>\n<ul>\n<li><strong>Use Cases</strong>: They form the backbone of caching and session storage.</li>\n<li><strong>Primary Examples</strong>: Redis (an in-memory store with rich data types like lists, sets, and streams), DynamoDB (an AWS-managed, serverless database offering single-digit millisecond latency), and Memcached (a simpler, multi-threaded pure LRU cache with no persistence).</li>\n</ul>\n<hr>",
+        "mermaidDiagrams": []
+      },
+      {
+        "id": "wide-column-stores",
+        "title": "Wide-Column Stores",
+        "contentHtml": "<p>In wide-column stores, rows can contain thousands of columns grouped into column families. They are optimized for high write throughput across distributed nodes and time-ordered range scans.</p>\n<ul>\n<li><strong>Data Modeling</strong>: Tables are designed specifically around access patterns and queries rather than data normalization.</li>\n<li><strong>Use Cases</strong>: Best for IoT sensor data, activity feeds, and write-heavy workloads at a massive scale.</li>\n<li><strong>Primary Examples</strong>: Cassandra (features a masterless ring, linear horizontal scalability, and tunable consistency) and HBase (built on HDFS with strong consistency).</li>\n</ul>\n<hr>",
+        "mermaidDiagrams": []
+      },
+      {
+        "id": "graph-databases",
+        "title": "Graph Databases",
+        "contentHtml": "<p>These databases model data as nodes (representing entities) and edges (representing relationships).</p>\n<ul>\n<li><strong>Performance</strong>: Multi-hop relationship traversals operate at O(log n) time complexity, which avoids the exponential cost of recursive SQL joins.</li>\n<li><strong>Use Cases</strong>: Use them when the relationships between data points are just as important as the data itself, such as in social graphs, fraud detection, or recommendation engines.</li>\n<li><strong>Primary Examples</strong>: Neo4j (ACID-compliant using the Cypher query language) and Amazon Neptune (supports Gremlin and SPARQL).</li>\n</ul>\n<hr>",
+        "mermaidDiagrams": []
+      },
+      {
+        "id": "time-series-databases",
+        "title": "Time-Series Databases",
+        "contentHtml": "<p>Time-series databases are append-heavy and heavily optimized for sequential writes and time-based range queries. They compress temporal data using delta encoding.</p>\n<ul>\n<li><strong>Use Cases</strong>: Standard for metrics, monitoring, telemetry, and events.</li>\n<li><strong>Primary Examples</strong>: InfluxDB (purpose-built with retention policies and continuous queries), TimescaleDB (a PostgreSQL extension offering full SQL capabilities), and Prometheus (pull-based metrics collection standard in Kubernetes).</li>\n</ul>\n<hr>",
+        "mermaidDiagrams": []
+      },
+      {
+        "id": "newsql-search",
+        "title": "NewSQL & Search",
+        "contentHtml": "<ul>\n<li><strong>NewSQL</strong>: Databases like CockroachDB and Google Spanner offer the strong consistency (ACID) of relational databases combined with horizontal scalability via distributed consensus protocols like Paxos or Raft. A trade-off is higher latency due to coordination.</li>\n<li><strong>Search</strong>: Engines like Elasticsearch and Solr use an inverted index data structure to provide near real-time full-text search and log analytics.</li>\n</ul>\n<hr>",
+        "mermaidDiagrams": []
+      },
+      {
+        "id": "the-cap-theorem",
+        "title": "The CAP Theorem",
+        "contentHtml": "<p>The CAP Theorem states that a distributed system cannot simultaneously guarantee Consistency, Availability, and Partition Tolerance. Because network partitions will inevitably occur in the real world, the practical architectural choice is always between:</p>\n<ul>\n<li><strong>CP</strong> (Consistency + Partition Tolerance)</li>\n<li><strong>AP</strong> (Availability + Partition Tolerance)</li>\n</ul>",
+        "mermaidDiagrams": [
+          "graph TD\n    CAP[\"CAP Theorem\"] --> C[\"Consistency<br/>Every read gets latest write\"]\n    CAP --> A[\"Availability<br/>Every request gets a response\"]\n    CAP --> P[\"Partition Tolerance<br/>System works despite network splits\"]\n    C & P --> CP[\"CP Systems<br/>MongoDB, HBase, Redis Cluster\"]\n    A & P --> AP[\"AP Systems<br/>Cassandra, DynamoDB, CouchDB\"]\n    style CAP fill:#3b82f6,color:#fff\n    style CP fill:#8b5cf6,color:#fff\n    style AP fill:#f59e0b,color:#fff"
+        ]
+      }
+    ],
+    "externalLinks": []
+  },
+  {
+    "id": "message-queues",
+    "slug": "message-queues",
+    "title": "Message Queues & Event Streaming",
+    "sections": [
+      {
+        "id": "core-concepts",
+        "title": "Core Concepts",
+        "contentHtml": "<ul>\n<li><strong>Producer &#x26; Consumer</strong>: A producer publishes messages to a queue or topic. A consumer reads and processes those messages, typically working alongside others in a consumer group.</li>\n<li><strong>Broker</strong>: The server that actually stores and routes the messages (like a Kafka broker or RabbitMQ node).</li>\n<li><strong>Topic vs. Queue</strong>: Both are named channels, but topics are designed for multiple subscribers, whereas queues are typically meant for a single consumer.</li>\n<li><strong>Acknowledgment (ACK)</strong>: A signal sent by the consumer to confirm a message was successfully processed before it gets removed.</li>\n<li><strong>Dead Letter Queue (DLQ)</strong>: A special queue where messages that repeatedly fail processing are routed for manual inspection or later replay.</li>\n<li><strong>Backpressure</strong>: A mechanism where consumers signal that they are overwhelmed, causing producers to slow down their message generation.</li>\n</ul>\n<hr>",
+        "mermaidDiagrams": [
+          "graph LR\n    P[Producer] -->|publish| B[\"Broker<br/>(Kafka/RabbitMQ)\"]\n    B -->|deliver| CG[\"Consumer Group\"]\n    CG -->|ACK| B\n    B -->|failed msgs| DLQ[\"Dead Letter Queue\"]\n    CG -->|backpressure| P\n    style B fill:#3b82f6,color:#fff\n    style DLQ fill:#ef4444,color:#fff"
+        ]
+      },
+      {
+        "id": "message-queue-vs-event-stream",
+        "title": "Message Queue vs. Event Stream",
+        "contentHtml": "<p>Though often used interchangeably, queues and streams serve different architectural purposes.</p>\n<table>\n<thead>\n<tr>\n<th>Property</th>\n<th>Message Queue</th>\n<th>Event Stream</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td><strong>Message Lifetime</strong></td>\n<td>Deleted after an ACK</td>\n<td>Retained for a configurable period (e.g., days or weeks)</td>\n</tr>\n<tr>\n<td><strong>Consumption</strong></td>\n<td>Single consumer or competing consumers</td>\n<td>Multiple independent consumer groups</td>\n</tr>\n<tr>\n<td><strong>Replayability</strong></td>\n<td>Not possible after the message is ACKed</td>\n<td>Yes, you can seek to any offset or timestamp</td>\n</tr>\n<tr>\n<td><strong>Ordering</strong></td>\n<td>Strict FIFO within the queue</td>\n<td>Ordered specifically within a partition</td>\n</tr>\n<tr>\n<td><strong>Primary Examples</strong></td>\n<td>RabbitMQ, SQS, ActiveMQ</td>\n<td>Kafka, Kinesis, Pulsar</td>\n</tr>\n</tbody>\n</table>\n<hr>",
+        "mermaidDiagrams": []
+      },
+      {
+        "id": "apache-kafka",
+        "title": "Apache Kafka",
+        "contentHtml": "<p>Kafka is the gold standard for high-throughput, fault-tolerant, and replayable event pipelines.</p>\n<ul>\n<li><strong>Architecture</strong>: Events are categorized into logical streams called <strong>Topics</strong>, which are divided into <strong>Partitions</strong> for parallelism. Each partition is an ordered, immutable append-only log, and key-based partitioning guarantees ordering per entity. Consumers track their sequential position using an <strong>Offset</strong>.</li>\n<li><strong>Delivery Guarantees</strong>:\n<ul>\n<li><em>At-most-once</em>: Fast, but messages might be lost (though never duplicated).</li>\n<li><em>At-least-once</em>: The default setting; messages won't be lost but might be duplicated, requiring idempotent consumers.</li>\n<li><em>Exactly-once</em>: No loss and no duplicates, which requires transactional consumers and idempotent producers.</li>\n</ul>\n</li>\n<li><strong>Interview Tip</strong>: Kafka's throughput scales by adding partitions, not just brokers. The maximum consumer parallelism within a group is exactly equal to the number of partitions.</li>\n</ul>\n<hr>",
+        "mermaidDiagrams": [
+          "graph TD\n    P1[Producer] & P2[Producer] --> T[\"Topic: orders\"]\n    T --> Part0[\"Partition 0\"] & Part1[\"Partition 1\"] & Part2[\"Partition 2\"]\n    subgraph \"Consumer Group A\"\n        C1[\"Consumer 1\"] --> Part0\n        C2[\"Consumer 2\"] --> Part1\n        C3[\"Consumer 3\"] --> Part2\n    end\n    subgraph \"Consumer Group B\"\n        C4[\"Consumer 4\"] --> Part0 & Part1 & Part2\n    end\n    style T fill:#3b82f6,color:#fff\n    style Part0 fill:#8b5cf6,color:#fff\n    style Part1 fill:#8b5cf6,color:#fff\n    style Part2 fill:#8b5cf6,color:#fff"
+        ]
+      },
+      {
+        "id": "rabbitmq-aws-sqs",
+        "title": "RabbitMQ & AWS SQS",
+        "contentHtml": "<p>When you don't need the massive throughput of an event stream, traditional message brokers are often the better choice.</p>\n<h3>RabbitMQ</h3>\n<p>A traditional AMQP broker that excels when you need fine-grained routing logic or task-queue semantics rather than pure throughput.</p>\n<ul>\n<li>Flexible exchange types (Direct, Fanout, Topic, Headers)</li>\n<li>Manual ACKs for safe retries</li>\n<li>Built-in priority queues (which Kafka lacks natively)</li>\n</ul>\n<h3>AWS SQS</h3>\n<p>A fully managed queue service.</p>\n<ul>\n<li><em>Standard Queues</em>: Near-unlimited throughput and at-least-once delivery with best-effort ordering (the cheapest option).</li>\n<li><em>FIFO Queues</em>: Exactly-once processing and strict ordering within a message group, but capped at lower throughput limits.</li>\n<li>Uses a \"visibility timeout\" to hide messages from other consumers during processing, requeuing them if they aren't deleted in time.</li>\n</ul>\n<hr>",
+        "mermaidDiagrams": []
+      },
+      {
+        "id": "key-messaging-patterns",
+        "title": "Key Messaging Patterns",
+        "contentHtml": "<ul>\n<li><strong>Point-to-Point (Task Queue)</strong>: One producer sends tasks to competing consumers in a group, ensuring each task (like resizing an image or sending an email) is processed by exactly one worker.</li>\n<li><strong>Publish-Subscribe (Fan-out)</strong>: One producer fans out events to multiple independent consumer groups. For example, an \"order placed\" event is sent to inventory, notification, and analytics services simultaneously.</li>\n<li><strong>Outbox Pattern</strong>: To guarantee at-least-once delivery even if the message broker goes down, you write to your database and a local \"outbox\" table in a single transaction. A separate relay process then publishes the outbox rows to the queue.</li>\n<li><strong>Saga Pattern</strong>: Used to coordinate multi-step workflows across microservices. It can be done via <em>Choreography</em> (decentralized, where services react to events) or <em>Orchestration</em> (a central controller issues commands).</li>\n</ul>\n<h3>Interview Tip on Idempotency</h3>\n<p>If an interviewer asks how to prevent double-processing, the answer is idempotent consumers combined with deduplication keys. For Kafka, store the last processed offset in the same database transaction as your business logic; for SQS, use a deduplication key stored in Redis with a TTL.</p>",
+        "mermaidDiagrams": [
+          "graph LR\n    subgraph \"Point-to-Point\"\n        PP_P[Producer] --> PP_Q[Queue]\n        PP_Q --> PP_C1[Worker 1]\n        PP_Q --> PP_C2[Worker 2]\n    end\n    subgraph \"Pub-Sub\"\n        PS_P[Producer] --> PS_T[Topic]\n        PS_T --> PS_G1[Group: Inventory]\n        PS_T --> PS_G2[Group: Notifications]\n        PS_T --> PS_G3[Group: Analytics]\n    end",
+          "sequenceDiagram\n    participant App\n    participant DB\n    participant Outbox\n    participant Relay\n    participant Queue\n    participant Consumer\n    App->>DB: BEGIN TX\n    App->>DB: INSERT order\n    App->>Outbox: INSERT event\n    App->>DB: COMMIT\n    Relay->>Outbox: Poll new events\n    Relay->>Queue: Publish\n    Queue->>Consumer: Deliver"
+        ]
+      }
+    ],
+    "externalLinks": []
+  },
+  {
+    "id": "decision-framework",
+    "slug": "decision-framework",
+    "title": "Interview Decision Framework",
+    "sections": [
+      {
+        "id": "database-selection",
+        "title": "Database Selection",
+        "contentHtml": "<ul>\n<li><strong>Clear relationships + ACID required?</strong> → Relational DB (PostgreSQL, Aurora)</li>\n<li><strong>Variable schema / document-shaped data?</strong> → Document store (MongoDB)</li>\n<li><strong>Millions of writes per second?</strong> → Wide-column store (Cassandra) or LSM-backed DB</li>\n<li><strong>Relationships are the query (social graphs, fraud)?</strong> → Graph DB (Neo4j, Neptune)</li>\n<li><strong>Time-ordered metrics / sensor data?</strong> → Time-series DB (InfluxDB, TimescaleDB)</li>\n<li><strong>Need full-text search?</strong> → Elasticsearch as a secondary store, synced via CDC or Kafka</li>\n<li><strong>Need SQL but at global scale?</strong> → NewSQL (CockroachDB, Spanner)</li>\n</ul>\n<hr>",
+        "mermaidDiagrams": [
+          "graph TD\n    Q1{\"ACID required?\"} -->|Yes| RDB[\"PostgreSQL / Aurora\"]\n    Q1 -->|No| Q2{\"Schema flexible?\"}\n    Q2 -->|Yes| DOC[\"MongoDB\"]\n    Q2 -->|No| Q3{\"Millions writes/sec?\"}\n    Q3 -->|Yes| WC[\"Cassandra\"]\n    Q3 -->|No| Q4{\"Graph queries?\"}\n    Q4 -->|Yes| GDB[\"Neo4j\"]\n    Q4 -->|No| Q5{\"Time-series?\"}\n    Q5 -->|Yes| TSDB[\"InfluxDB / TimescaleDB\"]\n    Q5 -->|No| Q6{\"Full-text search?\"}\n    Q6 -->|Yes| ES[\"Elasticsearch\"]\n    Q6 -->|No| Q7{\"Global SQL scale?\"}\n    Q7 -->|Yes| NS[\"CockroachDB / Spanner\"]\n    style Q1 fill:#3b82f6,color:#fff"
+        ]
+      },
+      {
+        "id": "caching-strategy",
+        "title": "Caching Strategy",
+        "contentHtml": "<ul>\n<li><strong>Read-heavy, mostly static data?</strong> → Cache-aside with a generous TTL</li>\n<li><strong>Consistency is critical with moderate writes?</strong> → Write-through cache</li>\n<li><strong>Write throughput is the bottleneck?</strong> → Write-behind cache (accept eventual consistency)</li>\n<li><strong>Cold starts are intolerable?</strong> → Refresh-ahead with predictive prefetching</li>\n<li><strong>Sessions or short-lived state?</strong> → Redis with TTL eviction</li>\n<li><strong>High risk of hot key stampede?</strong> → Mutex pattern, probabilistic early refresh, and TTL jitter</li>\n</ul>\n<hr>",
+        "mermaidDiagrams": [
+          "graph TD\n    Q1{\"Read-heavy, mostly static?\"} -->|Yes| CA[\"Cache-Aside + TTL\"]\n    Q1 -->|No| Q2{\"Consistency critical?\"}\n    Q2 -->|Yes| WT[\"Write-Through\"]\n    Q2 -->|No| Q3{\"Write throughput bottleneck?\"}\n    Q3 -->|Yes| WB[\"Write-Behind\"]\n    Q3 -->|No| Q4{\"Cold starts intolerable?\"}\n    Q4 -->|Yes| RA[\"Refresh-Ahead\"]\n    Q4 -->|No| Q5{\"Hot key stampede risk?\"}\n    Q5 -->|Yes| MX[\"Mutex + TTL Jitter\"]\n    style Q1 fill:#8b5cf6,color:#fff"
+        ]
+      },
+      {
+        "id": "queue-streaming-selection",
+        "title": "Queue / Streaming Selection",
+        "contentHtml": "<ul>\n<li><strong>Need replayability, audit log, or multiple independent consumers?</strong> → Event stream (Kafka, Kinesis)</li>\n<li><strong>Require complex routing or exchange logic?</strong> → RabbitMQ</li>\n<li><strong>Want fully managed, serverless-friendly?</strong> → AWS SQS (Standard or FIFO)</li>\n<li><strong>Need strict ordering within an entity?</strong> → Kafka with key-based partitioning</li>\n<li><strong>Need exactly-once semantics for financial transactions?</strong> → Kafka transactional API + idempotent consumers</li>\n<li><strong>Need a simple fire-and-forget task queue?</strong> → SQS Standard or Redis <code>LPUSH</code>/<code>BRPOP</code></li>\n</ul>\n<hr>",
+        "mermaidDiagrams": [
+          "graph TD\n    Q1{\"Need replay / audit?\"} -->|Yes| KF[\"Kafka / Kinesis\"]\n    Q1 -->|No| Q2{\"Complex routing?\"}\n    Q2 -->|Yes| RMQ[\"RabbitMQ\"]\n    Q2 -->|No| Q3{\"Fully managed?\"}\n    Q3 -->|Yes| SQS[\"AWS SQS\"]\n    Q3 -->|No| Q4{\"Simple task queue?\"}\n    Q4 -->|Yes| REDIS[\"Redis LPUSH/BRPOP\"]\n    style Q1 fill:#22c55e,color:#fff"
+        ]
+      },
+      {
+        "id": "data-structure-selection",
+        "title": "Data Structure Selection",
+        "contentHtml": "<ul>\n<li><strong>Membership test with minimal memory?</strong> → Bloom filter</li>\n<li><strong>Count distinct elements at scale?</strong> → HyperLogLog</li>\n<li><strong>Sorted scores for a ranked leaderboard?</strong> → Redis sorted set (skip list internally)</li>\n<li><strong>Prefix search or autocomplete?</strong> → Trie or Radix Tree</li>\n<li><strong>Full-text search?</strong> → Inverted index (Elasticsearch)</li>\n<li><strong>Distributed key routing?</strong> → Consistent hashing</li>\n<li><strong>Write-optimized embedded storage?</strong> → LSM-tree (RocksDB, LevelDB)</li>\n</ul>\n<hr>",
+        "mermaidDiagrams": [
+          "graph TD\n    Q1{\"Membership test?\"} -->|Yes| BF[\"Bloom Filter\"]\n    Q1 -->|No| Q2{\"Count distinct?\"}\n    Q2 -->|Yes| HLL[\"HyperLogLog\"]\n    Q2 -->|No| Q3{\"Sorted ranking?\"}\n    Q3 -->|Yes| SL[\"Skip List / Redis ZSET\"]\n    Q3 -->|No| Q4{\"Prefix search?\"}\n    Q4 -->|Yes| TR[\"Trie\"]\n    Q4 -->|No| Q5{\"Full-text search?\"}\n    Q5 -->|Yes| II[\"Inverted Index\"]\n    Q5 -->|No| Q6{\"Distributed routing?\"}\n    Q6 -->|Yes| CH[\"Consistent Hashing\"]\n    style Q1 fill:#f59e0b,color:#fff"
+        ]
+      },
+      {
+        "id": "the-golden-rule",
+        "title": "The Golden Rule",
+        "contentHtml": "<p>Always justify your choices with explicit trade-offs:</p>\n<blockquote>\n<p><em>\"I chose X because it gives us Y, but this means we accept Z.\"</em></p>\n</blockquote>\n<p>Start with the simplest solution. Only add complexity when pushed on scale, failure scenarios, or cost. The best answers are collaborative conversations, not recitations.</p>",
+        "mermaidDiagrams": []
+      }
+    ],
+    "externalLinks": []
+  }
+]

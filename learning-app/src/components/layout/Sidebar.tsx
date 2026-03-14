@@ -10,7 +10,7 @@ export default function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose:
   const { isRead } = useProgress();
   const location = useLocation();
 
-  if (!location.pathname.startsWith('/version/')) return null;
+  if (!location.pathname.includes('/version/')) return null;
 
   return (
     <>
@@ -38,7 +38,7 @@ export default function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose:
               return (
                 <li key={vuln.slug}>
                   <Link
-                    to={`/version/${currentVersion}/${vuln.slug}`}
+                    to={`/owasp/version/${currentVersion}/${vuln.slug}`}
                     onClick={onClose}
                     className={`flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors ${
                       isActive

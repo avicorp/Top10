@@ -1,14 +1,21 @@
 import { createContext, useContext, useReducer, useEffect, useCallback, useRef, type ReactNode } from 'react';
-import type { UserProgress, OwaspVersion, VulnerabilityProgress, QuizAttempt } from '../types';
+import type { UserProgress, OwaspVersion, VulnerabilityProgress, QuizAttempt, TopicStatus } from '../types';
 
 const STORAGE_KEY = 'owasp-top10-progress';
-const SCHEMA_VERSION = 1;
+const SCHEMA_VERSION = 2;
 const DEBOUNCE_MS = 1000;
+
+const defaultSysDesign = {
+  topics: {} as Record<string, TopicStatus>,
+  quizAttempts: [] as QuizAttempt[],
+  interviewSteps: {} as Record<string, string[]>,
+};
 
 const defaultProgress: UserProgress = {
   schemaVersion: SCHEMA_VERSION,
   vulnerabilities: {},
   quizAttempts: [],
+  sysdesign: defaultSysDesign,
   theme: 'dark',
   lastVersion: '2025',
 };
@@ -18,6 +25,11 @@ function loadProgress(): UserProgress {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return defaultProgress;
     const parsed = JSON.parse(raw);
+    // Migrate v1 → v2: add sysdesign field
+    if (parsed.schemaVersion === 1) {
+      parsed.schemaVersion = 2;
+      parsed.sysdesign = defaultSysDesign;
+    }
     if (parsed.schemaVersion !== SCHEMA_VERSION) return defaultProgress;
     return parsed;
   } catch {
@@ -30,6 +42,9 @@ type Action =
   | { type: 'TOGGLE_BOOKMARK'; slug: string; version: OwaspVersion }
   | { type: 'SET_NOTE'; slug: string; version: OwaspVersion; note: string }
   | { type: 'RECORD_QUIZ'; attempt: QuizAttempt }
+  | { type: 'SET_TOPIC_STATUS'; slug: string; status: TopicStatus }
+  | { type: 'RECORD_SYSDESIGN_QUIZ'; attempt: QuizAttempt }
+  | { type: 'MARK_INTERVIEW_STEP'; interviewSlug: string; stepId: string }
   | { type: 'SET_THEME'; theme: 'dark' | 'light' }
   | { type: 'SET_VERSION'; version: OwaspVersion }
   | { type: 'IMPORT_PROGRESS'; progress: UserProgress }
@@ -79,6 +94,36 @@ function reducer(state: UserProgress, action: Action): UserProgress {
     }
     case 'RECORD_QUIZ':
       return { ...state, quizAttempts: [...state.quizAttempts, action.attempt] };
+    case 'SET_TOPIC_STATUS':
+      return {
+        ...state,
+        sysdesign: {
+          ...state.sysdesign,
+          topics: { ...state.sysdesign.topics, [action.slug]: action.status },
+        },
+      };
+    case 'RECORD_SYSDESIGN_QUIZ':
+      return {
+        ...state,
+        sysdesign: {
+          ...state.sysdesign,
+          quizAttempts: [...state.sysdesign.quizAttempts, action.attempt],
+        },
+      };
+    case 'MARK_INTERVIEW_STEP': {
+      const existing = state.sysdesign.interviewSteps[action.interviewSlug] || [];
+      if (existing.includes(action.stepId)) return state;
+      return {
+        ...state,
+        sysdesign: {
+          ...state.sysdesign,
+          interviewSteps: {
+            ...state.sysdesign.interviewSteps,
+            [action.interviewSlug]: [...existing, action.stepId],
+          },
+        },
+      };
+    }
     case 'SET_THEME':
       return { ...state, theme: action.theme };
     case 'SET_VERSION':
@@ -97,6 +142,8 @@ interface ProgressContextValue {
   dispatch: React.Dispatch<Action>;
   getVulnProgress: (slug: string, version: OwaspVersion) => VulnerabilityProgress | null;
   isRead: (slug: string, version: OwaspVersion) => boolean;
+  getTopicStatus: (slug: string) => TopicStatus;
+  getInterviewSteps: (slug: string) => string[];
   exportProgress: () => string;
 }
 
@@ -130,12 +177,20 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
     return vp ? vp.sectionsRead.length >= 2 : false;
   }, [getVulnProgress]);
 
+  const getTopicStatus = useCallback((slug: string): TopicStatus => {
+    return progress.sysdesign.topics[slug] || 'unread';
+  }, [progress.sysdesign.topics]);
+
+  const getInterviewSteps = useCallback((slug: string): string[] => {
+    return progress.sysdesign.interviewSteps[slug] || [];
+  }, [progress.sysdesign.interviewSteps]);
+
   const exportProgress = useCallback(() => {
     return JSON.stringify(progress, null, 2);
   }, [progress]);
 
   return (
-    <ProgressContext.Provider value={{ progress, dispatch, getVulnProgress, isRead, exportProgress }}>
+    <ProgressContext.Provider value={{ progress, dispatch, getVulnProgress, isRead, getTopicStatus, getInterviewSteps, exportProgress }}>
       {children}
     </ProgressContext.Provider>
   );
