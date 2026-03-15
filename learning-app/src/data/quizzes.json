@@ -7,9 +7,9 @@
     "vulnerabilitySlug": "a1-2017-injection",
     "question": "Which 2017 OWASP Top 10 category best matches this description?\n\n\"An application is vulnerable to attack when:  User-supplied data is not validated, filtered, or sanitized by the applica...\"",
     "options": [
-      "XML External Entities (XXE)",
-      "Insecure Deserialization",
-      "Broken Authentication",
+      "Security Misconfiguration",
+      "Insufficient Logging and Monitoring",
+      "Cross-Site Scripting (XSS)",
       "Injection"
     ],
     "correctIndex": 3,
@@ -23,12 +23,12 @@
     "vulnerabilitySlug": "a2-2017-broken-authentication",
     "question": "Which 2017 OWASP Top 10 category best matches this description?\n\n\"Confirmation of the user's identity, authentication, and session management are critical to protect against authenticati...\"",
     "options": [
+      "Insufficient Logging and Monitoring",
       "Broken Authentication",
-      "XML External Entities (XXE)",
-      "Insecure Deserialization",
-      "Using Components with Known Vulnerabilities"
+      "Sensitive Data Exposure",
+      "Injection"
     ],
-    "correctIndex": 0,
+    "correctIndex": 1,
     "explanation": "This describes A2:2017 - Broken Authentication."
   },
   {
@@ -39,12 +39,12 @@
     "vulnerabilitySlug": "a3-2017-sensitive-data-exposure",
     "question": "Which 2017 OWASP Top 10 category best matches this description?\n\n\"The first thing is to determine the protection needs of data in transit and at rest. For example, passwords, credit card...\"",
     "options": [
-      "Insufficient Logging and Monitoring",
-      "Insecure Deserialization",
+      "Using Components with Known Vulnerabilities",
       "Sensitive Data Exposure",
-      "Using Components with Known Vulnerabilities"
+      "Broken Access Control",
+      "Insufficient Logging and Monitoring"
     ],
-    "correctIndex": 2,
+    "correctIndex": 1,
     "explanation": "This describes A3:2017 - Sensitive Data Exposure."
   },
   {
@@ -55,12 +55,12 @@
     "vulnerabilitySlug": "a4-2017-xml-external-entities-xxe",
     "question": "Which 2017 OWASP Top 10 category best matches this description?\n\n\"Applications and in particular XML-based web services or downstream integrations might be vulnerable to attack if:  The...\"",
     "options": [
-      "Cross-Site Scripting (XSS)",
-      "Insecure Deserialization",
+      "Broken Access Control",
       "XML External Entities (XXE)",
-      "Broken Access Control"
+      "Security Misconfiguration",
+      "Insufficient Logging and Monitoring"
     ],
-    "correctIndex": 2,
+    "correctIndex": 1,
     "explanation": "This describes A4:2017 - XML External Entities (XXE)."
   },
   {
@@ -71,12 +71,12 @@
     "vulnerabilitySlug": "a5-2017-broken-access-control",
     "question": "Which 2017 OWASP Top 10 category best matches this description?\n\n\"Access control enforces policy such that users cannot act outside of their intended permissions. Failures typically lead...\"",
     "options": [
-      "Insufficient Logging and Monitoring",
-      "Cross-Site Scripting (XSS)",
-      "Broken Authentication",
-      "Broken Access Control"
+      "Sensitive Data Exposure",
+      "Broken Access Control",
+      "Injection",
+      "Insufficient Logging and Monitoring"
     ],
-    "correctIndex": 3,
+    "correctIndex": 1,
     "explanation": "This describes A5:2017 - Broken Access Control."
   },
   {
@@ -87,12 +87,12 @@
     "vulnerabilitySlug": "a6-2017-security-misconfiguration",
     "question": "Which 2017 OWASP Top 10 category best matches this description?\n\n\"The application might be vulnerable if the application is:  Missing appropriate security hardening across any part of th...\"",
     "options": [
-      "Cross-Site Scripting (XSS)",
-      "XML External Entities (XXE)",
+      "Broken Authentication",
       "Insecure Deserialization",
-      "Security Misconfiguration"
+      "Security Misconfiguration",
+      "Insufficient Logging and Monitoring"
     ],
-    "correctIndex": 3,
+    "correctIndex": 2,
     "explanation": "This describes A6:2017 - Security Misconfiguration."
   },
   {
@@ -103,12 +103,12 @@
     "vulnerabilitySlug": "a7-2017-cross-site-scripting-xss",
     "question": "Which 2017 OWASP Top 10 category best matches this description?\n\n\"There are three forms of XSS, usually targeting users' browsers:  Reflected XSS: The application or API includes unvalid...\"",
     "options": [
-      "Security Misconfiguration",
-      "Broken Access Control",
-      "XML External Entities (XXE)",
-      "Cross-Site Scripting (XSS)"
+      "Injection",
+      "Broken Authentication",
+      "Cross-Site Scripting (XSS)",
+      "Broken Access Control"
     ],
-    "correctIndex": 3,
+    "correctIndex": 2,
     "explanation": "This describes A7:2017 - Cross-Site Scripting (XSS)."
   },
   {
@@ -119,12 +119,12 @@
     "vulnerabilitySlug": "a8-2017-insecure-deserialization",
     "question": "Which 2017 OWASP Top 10 category best matches this description?\n\n\"Applications and APIs will be vulnerable if they deserialize hostile or tampered objects supplied by an attacker. This c...\"",
     "options": [
-      "Security Misconfiguration",
-      "Cross-Site Scripting (XSS)",
+      "Broken Access Control",
       "Insecure Deserialization",
-      "Insufficient Logging and Monitoring"
+      "Broken Authentication",
+      "Using Components with Known Vulnerabilities"
     ],
-    "correctIndex": 2,
+    "correctIndex": 1,
     "explanation": "This describes A8:2017 - Insecure Deserialization."
   },
   {
@@ -135,10 +135,10 @@
     "vulnerabilitySlug": "a9-2017-using-components-with-known-vulnerabilities",
     "question": "Which 2017 OWASP Top 10 category best matches this description?\n\n\"You are likely vulnerable:  If you do not know the versions of all components you use (both client-side and server-side)...\"",
     "options": [
-      "Broken Authentication",
+      "Security Misconfiguration",
       "Using Components with Known Vulnerabilities",
-      "Injection",
-      "Insufficient Logging and Monitoring"
+      "Insecure Deserialization",
+      "XML External Entities (XXE)"
     ],
     "correctIndex": 1,
     "explanation": "This describes A9:2017 - Using Components with Known Vulnerabilities."
@@ -151,12 +151,12 @@
     "vulnerabilitySlug": "a10-2017-insufficient-logging-and-monitoring",
     "question": "Which 2017 OWASP Top 10 category best matches this description?\n\n\"Insufficient logging, detection, monitoring and active response occurs any time:  Auditable events, such as logins, fail...\"",
     "options": [
-      "Security Misconfiguration",
+      "Injection",
+      "Broken Access Control",
       "Insufficient Logging and Monitoring",
-      "Using Components with Known Vulnerabilities",
-      "Insecure Deserialization"
+      "Broken Authentication"
     ],
-    "correctIndex": 1,
+    "correctIndex": 2,
     "explanation": "This describes A10:2017 - Insufficient Logging and Monitoring."
   },
   {
@@ -167,12 +167,12 @@
     "vulnerabilitySlug": "a1-2017-injection",
     "question": "Which of the following is a recommended prevention for A1:2017 - Injection?",
     "options": [
-      "Apply controls as per the classification.",
       "Do the following, at a minimum, and consult the references:",
       "Ensure registration, credential recovery, and API pathways are hardened against account enumeration ",
-      "Preventing injection requires keeping data separate from commands and queries."
+      "Preventing injection requires keeping data separate from commands and queries.",
+      "Align password length, complexity and rotation policies with NIST 800-63 B's guidelines in section 5"
     ],
-    "correctIndex": 3,
+    "correctIndex": 2,
     "explanation": "This prevention measure comes from the A1:2017 guidelines."
   },
   {
@@ -183,12 +183,12 @@
     "vulnerabilitySlug": "a2-2017-broken-authentication",
     "question": "Which of the following is a recommended prevention for A2:2017 - Broken Authentication?",
     "options": [
-      "Where possible, implement multi-factor authentication to prevent automated, credential stuffing, bru",
-      "Ensure up-to-date and strong standard algorithms, protocols, and keys are in place; use proper key m",
+      "Use positive or \"whitelist\" server-side input validation. This is not a complete defense as many app",
+      "Preventing injection requires keeping data separate from commands and queries.",
       "Do the following, at a minimum, and consult the references:",
-      "The preferred option is to use a safe API, which avoids the use of the interpreter entirely or provi"
+      "Where possible, implement multi-factor authentication to prevent automated, credential stuffing, bru"
     ],
-    "correctIndex": 0,
+    "correctIndex": 3,
     "explanation": "This prevention measure comes from the A2:2017 guidelines."
   },
   {
@@ -199,12 +199,12 @@
     "vulnerabilitySlug": "a3-2017-sensitive-data-exposure",
     "question": "Which of the following is a recommended prevention for A3:2017 - Sensitive Data Exposure?",
     "options": [
+      "Ensure registration, credential recovery, and API pathways are hardened against account enumeration ",
       "Do the following, at a minimum, and consult the references:",
       "For any residual dynamic queries, escape special characters using the specific escape syntax for tha",
-      "Ensure registration, credential recovery, and API pathways are hardened against account enumeration ",
-      "Where possible, implement multi-factor authentication to prevent automated, credential stuffing, bru"
+      "The preferred option is to use a safe API, which avoids the use of the interpreter entirely or provi"
     ],
-    "correctIndex": 0,
+    "correctIndex": 1,
     "explanation": "This prevention measure comes from the A3:2017 guidelines."
   },
   {
@@ -215,12 +215,12 @@
     "vulnerabilitySlug": "a4-2017-xml-external-entities-xxe",
     "question": "Which of the following is a recommended prevention for A4:2017 - XML External Entities (XXE)?",
     "options": [
+      "Where possible, implement multi-factor authentication to prevent automated, credential stuffing, bru",
       "Developer training is essential to identify and mitigate XXE. Besides that, preventing XXE requires:",
       "Do not ship or deploy with any default credentials, particularly for admin users.",
-      "For any residual dynamic queries, escape special characters using the specific escape syntax for tha",
-      "The preferred option is to use a safe API, which avoids the use of the interpreter entirely or provi"
+      "Limit or increasingly delay failed login attempts. Log all failures and alert administrators when cr"
     ],
-    "correctIndex": 0,
+    "correctIndex": 1,
     "explanation": "This prevention measure comes from the A4:2017 guidelines."
   },
   {
@@ -231,8 +231,8 @@
     "vulnerabilitySlug": "a5-2017-broken-access-control",
     "question": "Which of the following is a recommended prevention for A5:2017 - Broken Access Control?",
     "options": [
-      "Use positive or \"whitelist\" server-side input validation. This is not a complete defense as many app",
-      "Ensure registration, credential recovery, and API pathways are hardened against account enumeration ",
+      "Where possible, implement multi-factor authentication to prevent automated, credential stuffing, bru",
+      "Do not ship or deploy with any default credentials, particularly for admin users.",
       "Access control is only effective if enforced in trusted server-side code or server-less API, where t",
       "Align password length, complexity and rotation policies with NIST 800-63 B's guidelines in section 5"
     ],
@@ -247,12 +247,12 @@
     "vulnerabilitySlug": "a6-2017-security-misconfiguration",
     "question": "Which of the following is a recommended prevention for A6:2017 - Security Misconfiguration?",
     "options": [
-      "Where possible, implement multi-factor authentication to prevent automated, credential stuffing, bru",
       "Secure installation processes should be implemented, including:",
-      "Align password length, complexity and rotation policies with NIST 800-63 B's guidelines in section 5",
-      "Ensure registration, credential recovery, and API pathways are hardened against account enumeration "
+      "Implement weak-password checks, such as testing new or changed passwords against a list of the top 1",
+      "Use positive or \"whitelist\" server-side input validation. This is not a complete defense as many app",
+      "Where possible, implement multi-factor authentication to prevent automated, credential stuffing, bru"
     ],
-    "correctIndex": 1,
+    "correctIndex": 0,
     "explanation": "This prevention measure comes from the A6:2017 guidelines."
   },
   {
@@ -264,9 +264,9 @@
     "question": "Which of the following is a recommended prevention for A7:2017 - Cross-Site Scripting (XSS)?",
     "options": [
       "Preventing XSS requires separation of untrusted data from active browser content. This can be achiev",
-      "Implement weak-password checks, such as testing new or changed passwords against a list of the top 1",
-      "Ensure registration, credential recovery, and API pathways are hardened against account enumeration ",
-      "For any residual dynamic queries, escape special characters using the specific escape syntax for tha"
+      "For any residual dynamic queries, escape special characters using the specific escape syntax for tha",
+      "Align password length, complexity and rotation policies with NIST 800-63 B's guidelines in section 5",
+      "Where possible, implement multi-factor authentication to prevent automated, credential stuffing, bru"
     ],
     "correctIndex": 0,
     "explanation": "This prevention measure comes from the A7:2017 guidelines."
@@ -279,12 +279,12 @@
     "vulnerabilitySlug": "a8-2017-insecure-deserialization",
     "question": "Which of the following is a recommended prevention for A8:2017 - Insecure Deserialization?",
     "options": [
-      "Limit or increasingly delay failed login attempts. Log all failures and alert administrators when cr",
       "The preferred option is to use a safe API, which avoids the use of the interpreter entirely or provi",
-      "For any residual dynamic queries, escape special characters using the specific escape syntax for tha",
-      "The only safe architectural pattern is not to accept serialized objects from untrusted sources or to"
+      "The only safe architectural pattern is not to accept serialized objects from untrusted sources or to",
+      "Align password length, complexity and rotation policies with NIST 800-63 B's guidelines in section 5",
+      "For any residual dynamic queries, escape special characters using the specific escape syntax for tha"
     ],
-    "correctIndex": 3,
+    "correctIndex": 1,
     "explanation": "This prevention measure comes from the A8:2017 guidelines."
   },
   {
@@ -296,9 +296,9 @@
     "question": "Which of the following is a recommended prevention for A9:2017 - Using Components with Known Vulnerabilities?",
     "options": [
       "There should be a patch management process in place to:",
-      "The preferred option is to use a safe API, which avoids the use of the interpreter entirely or provi",
-      "Limit or increasingly delay failed login attempts. Log all failures and alert administrators when cr",
-      "Ensure registration, credential recovery, and API pathways are hardened against account enumeration "
+      "Preventing injection requires keeping data separate from commands and queries.",
+      "Implement weak-password checks, such as testing new or changed passwords against a list of the top 1",
+      "Align password length, complexity and rotation policies with NIST 800-63 B's guidelines in section 5"
     ],
     "correctIndex": 0,
     "explanation": "This prevention measure comes from the A9:2017 guidelines."
@@ -311,12 +311,12 @@
     "vulnerabilitySlug": "a10-2017-insufficient-logging-and-monitoring",
     "question": "Which of the following is a recommended prevention for A10:2017 - Insufficient Logging and Monitoring?",
     "options": [
-      "For any residual dynamic queries, escape special characters using the specific escape syntax for tha",
-      "Use positive or \"whitelist\" server-side input validation. This is not a complete defense as many app",
-      "As per the risk of the data stored or processed by the application:",
-      "Limit or increasingly delay failed login attempts. Log all failures and alert administrators when cr"
+      "Align password length, complexity and rotation policies with NIST 800-63 B's guidelines in section 5",
+      "Limit or increasingly delay failed login attempts. Log all failures and alert administrators when cr",
+      "Where possible, implement multi-factor authentication to prevent automated, credential stuffing, bru",
+      "As per the risk of the data stored or processed by the application:"
     ],
-    "correctIndex": 2,
+    "correctIndex": 3,
     "explanation": "This prevention measure comes from the A10:2017 guidelines."
   },
   {
@@ -327,12 +327,12 @@
     "vulnerabilitySlug": "a1-2017-injection",
     "question": "What vulnerability does this code demonstrate?",
     "options": [
+      "Insecure Deserialization",
+      "Cross-Site Scripting (XSS)",
       "Injection",
-      "XML External Entities (XXE)",
-      "Insufficient Logging and Monitoring",
       "Using Components with Known Vulnerabilities"
     ],
-    "correctIndex": 0,
+    "correctIndex": 2,
     "explanation": "This code example demonstrates A1:2017 - Injection.",
     "codeSnippet": "String query = \"SELECT * FROM accounts WHERE custID='\" + request.getParameter(\"id\") + \"'\";"
   },
@@ -344,12 +344,12 @@
     "vulnerabilitySlug": "a4-2017-xml-external-entities-xxe",
     "question": "What vulnerability does this code demonstrate?",
     "options": [
-      "XML External Entities (XXE)",
-      "Injection",
-      "Insecure Deserialization",
-      "Security Misconfiguration"
+      "Sensitive Data Exposure",
+      "Using Components with Known Vulnerabilities",
+      "Cross-Site Scripting (XSS)",
+      "XML External Entities (XXE)"
     ],
-    "correctIndex": 0,
+    "correctIndex": 3,
     "explanation": "This code example demonstrates A4:2017 - XML External Entities (XXE).",
     "codeSnippet": "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n    <!DOCTYPE foo [\n    <!ELEMENT foo ANY >\n    <!ENTITY xxe SYSTEM \"file:///etc/passwd\" >]>\n    <foo>&xxe;</foo>"
   },
@@ -361,12 +361,12 @@
     "vulnerabilitySlug": "a5-2017-broken-access-control",
     "question": "What vulnerability does this code demonstrate?",
     "options": [
-      "Security Misconfiguration",
-      "Insecure Deserialization",
-      "Broken Access Control",
-      "Using Components with Known Vulnerabilities"
+      "Using Components with Known Vulnerabilities",
+      "Broken Authentication",
+      "XML External Entities (XXE)",
+      "Broken Access Control"
     ],
-    "correctIndex": 2,
+    "correctIndex": 3,
     "explanation": "This code example demonstrates A5:2017 - Broken Access Control.",
     "codeSnippet": "pstmt.setString(1, request.getParameter(\"acct\"));\n  ResultSet results = pstmt.executeQuery();"
   },
@@ -378,12 +378,12 @@
     "vulnerabilitySlug": "a8-2017-insecure-deserialization",
     "question": "What vulnerability does this code demonstrate?",
     "options": [
-      "Insecure Deserialization",
-      "XML External Entities (XXE)",
-      "Injection",
-      "Sensitive Data Exposure"
+      "Insufficient Logging and Monitoring",
+      "Broken Access Control",
+      "Using Components with Known Vulnerabilities",
+      "Insecure Deserialization"
     ],
-    "correctIndex": 0,
+    "correctIndex": 3,
     "explanation": "This code example demonstrates A8:2017 - Insecure Deserialization.",
     "codeSnippet": "a:4:{i:0;i:132;i:1;s:7:\"Mallory\";i:2;s:4:\"user\";i:3;s:32:\"b6a8b3bea87fe0e05022f8f3c88bc960\";}"
   },
@@ -395,12 +395,12 @@
     "vulnerabilitySlug": "a01-2021-broken-access-control",
     "question": "Which 2021 OWASP Top 10 category best matches this description?\n\n\"Access control enforces policy such that users cannot act outside of their intended permissions. Failures typically lead...\"",
     "options": [
+      "Security Logging and Monitoring Failures",
       "Broken Access Control",
-      "Identification and Authentication Failures",
-      "Insecure Design",
-      "Security Logging and Monitoring Failures"
+      "Server-Side Request Forgery (SSRF)",
+      "Software and Data Integrity Failures"
     ],
-    "correctIndex": 0,
+    "correctIndex": 1,
     "explanation": "This describes A01:2021 - Broken Access Control."
   },
   {
@@ -411,12 +411,12 @@
     "vulnerabilitySlug": "a02-2021-cryptographic-failures",
     "question": "Which 2021 OWASP Top 10 category best matches this description?\n\n\"The first thing is to determine the protection needs of data in transit and at rest. For example, passwords, credit card...\"",
     "options": [
-      "Broken Access Control",
       "Injection",
       "Cryptographic Failures",
+      "Security Misconfiguration",
       "Security Logging and Monitoring Failures"
     ],
-    "correctIndex": 2,
+    "correctIndex": 1,
     "explanation": "This describes A02:2021 - Cryptographic Failures."
   },
   {
@@ -427,10 +427,10 @@
     "vulnerabilitySlug": "a03-2021-injection",
     "question": "Which 2021 OWASP Top 10 category best matches this description?\n\n\"An application is vulnerable to attack when:   User-supplied data is not validated, filtered, or sanitized by the applic...\"",
     "options": [
-      "Security Misconfiguration",
-      "Server-Side Request Forgery (SSRF)",
+      "Identification and Authentication Failures",
+      "Vulnerable and Outdated Components",
       "Injection",
-      "Vulnerable and Outdated Components"
+      "Security Logging and Monitoring Failures"
     ],
     "correctIndex": 2,
     "explanation": "This describes A03:2021 - Injection."
@@ -443,12 +443,12 @@
     "vulnerabilitySlug": "a04-2021-insecure-design",
     "question": "Which 2021 OWASP Top 10 category best matches this description?\n\n\"Insecure design is a broad category representing different weaknesses, expressed as “missing or ineffective control desi...\"",
     "options": [
+      "Security Logging and Monitoring Failures",
       "Insecure Design",
-      "Injection",
-      "Vulnerable and Outdated Components",
-      "Cryptographic Failures"
+      "Server-Side Request Forgery (SSRF)",
+      "Injection"
     ],
-    "correctIndex": 0,
+    "correctIndex": 1,
     "explanation": "This describes A04:2021 - Insecure Design."
   },
   {
@@ -459,12 +459,12 @@
     "vulnerabilitySlug": "a05-2021-security-misconfiguration",
     "question": "Which 2021 OWASP Top 10 category best matches this description?\n\n\"The application might be vulnerable if the application is:   Missing appropriate security hardening across any part of t...\"",
     "options": [
-      "Insecure Design",
-      "Broken Access Control",
       "Security Misconfiguration",
-      "Identification and Authentication Failures"
+      "Server-Side Request Forgery (SSRF)",
+      "Software and Data Integrity Failures",
+      "Broken Access Control"
     ],
-    "correctIndex": 2,
+    "correctIndex": 0,
     "explanation": "This describes A05:2021 - Security Misconfiguration."
   },
   {
@@ -475,12 +475,12 @@
     "vulnerabilitySlug": "a06-2021-vulnerable-and-outdated-components",
     "question": "Which 2021 OWASP Top 10 category best matches this description?\n\n\"You are likely vulnerable:   If you do not know the versions of all components you use (both client-side and server-side...\"",
     "options": [
-      "Security Logging and Monitoring Failures",
-      "Vulnerable and Outdated Components",
-      "Injection",
-      "Server-Side Request Forgery (SSRF)"
+      "Security Misconfiguration",
+      "Identification and Authentication Failures",
+      "Insecure Design",
+      "Vulnerable and Outdated Components"
     ],
-    "correctIndex": 1,
+    "correctIndex": 3,
     "explanation": "This describes A06:2021 - Vulnerable and Outdated Components."
   },
   {
@@ -491,12 +491,12 @@
     "vulnerabilitySlug": "a07-2021-identification-and-authentication-failures",
     "question": "Which 2021 OWASP Top 10 category best matches this description?\n\n\"Confirmation of the user's identity, authentication, and session management is critical to protect against authenticatio...\"",
     "options": [
-      "Identification and Authentication Failures",
-      "Insecure Design",
       "Cryptographic Failures",
-      "Injection"
+      "Insecure Design",
+      "Software and Data Integrity Failures",
+      "Identification and Authentication Failures"
     ],
-    "correctIndex": 0,
+    "correctIndex": 3,
     "explanation": "This describes A07:2021 - Identification and Authentication Failures."
   },
   {
@@ -507,12 +507,12 @@
     "vulnerabilitySlug": "a08-2021-software-and-data-integrity-failures",
     "question": "Which 2021 OWASP Top 10 category best matches this description?\n\n\"Software and data integrity failures relate to code and infrastructure that does not protect against integrity violation...\"",
     "options": [
+      "Cryptographic Failures",
+      "Vulnerable and Outdated Components",
       "Insecure Design",
-      "Software and Data Integrity Failures",
-      "Security Logging and Monitoring Failures",
-      "Cryptographic Failures"
+      "Software and Data Integrity Failures"
     ],
-    "correctIndex": 1,
+    "correctIndex": 3,
     "explanation": "This describes A08:2021 - Software and Data Integrity Failures."
   },
   {
@@ -523,12 +523,12 @@
     "vulnerabilitySlug": "a09-2021-security-logging-and-monitoring-failures",
     "question": "Which 2021 OWASP Top 10 category best matches this description?\n\n\"Returning to the OWASP Top 10 2021, this category is to help detect, escalate, and respond to active breaches. Without l...\"",
     "options": [
-      "Insecure Design",
-      "Broken Access Control",
-      "Vulnerable and Outdated Components",
-      "Security Logging and Monitoring Failures"
+      "Cryptographic Failures",
+      "Security Logging and Monitoring Failures",
+      "Server-Side Request Forgery (SSRF)",
+      "Identification and Authentication Failures"
     ],
-    "correctIndex": 3,
+    "correctIndex": 1,
     "explanation": "This describes A09:2021 - Security Logging and Monitoring Failures."
   },
   {
@@ -540,9 +540,9 @@
     "question": "Which 2021 OWASP Top 10 category best matches this description?\n\n\"SSRF flaws occur whenever a web application is fetching a remote resource without validating the user-supplied URL. It a...\"",
     "options": [
       "Server-Side Request Forgery (SSRF)",
-      "Injection",
-      "Security Misconfiguration",
-      "Vulnerable and Outdated Components"
+      "Vulnerable and Outdated Components",
+      "Software and Data Integrity Failures",
+      "Broken Access Control"
     ],
     "correctIndex": 0,
     "explanation": "This describes A10:2021 - Server-Side Request Forgery (SSRF)."
@@ -555,10 +555,10 @@
     "vulnerabilitySlug": "a01-2021-broken-access-control",
     "question": "Which of the following is a recommended prevention for A01:2021 - Broken Access Control?",
     "options": [
-      "possible or use PCI DSS compliant tokenization or even truncation.",
-      "Ensure up-to-date and strong standard algorithms, protocols, and",
+      "Identify which data is sensitive according to privacy laws,",
+      "Classify data processed, stored, or transmitted by an application.",
       "Access control is only effective in trusted server-side code or",
-      "keys are in place; use proper key management."
+      "Data that is not retained cannot be stolen."
     ],
     "correctIndex": 2,
     "explanation": "This prevention measure comes from the A01:2021 guidelines."
@@ -571,12 +571,12 @@
     "vulnerabilitySlug": "a02-2021-cryptographic-failures",
     "question": "Which of the following is a recommended prevention for A02:2021 - Cryptographic Failures?",
     "options": [
-      "Unique application business limit requirements should be enforced by",
       "Access control is only effective in trusted server-side code or",
-      "accepting that the user can create, read, update, or delete any",
-      "Do the following, at a minimum, and consult the references:"
+      "Do the following, at a minimum, and consult the references:",
+      "Disable web server directory listing and ensure file metadata (e.g.,",
+      ".git) and backup files are not present within web roots."
     ],
-    "correctIndex": 3,
+    "correctIndex": 1,
     "explanation": "This prevention measure comes from the A02:2021 guidelines."
   },
   {
@@ -587,9 +587,9 @@
     "vulnerabilitySlug": "a03-2021-injection",
     "question": "Which of the following is a recommended prevention for A03:2021 - Injection?",
     "options": [
-      ".git) and backup files are not present within web roots.",
-      "Except for public resources, deny by default.",
-      "Unique application business limit requirements should be enforced by",
+      "accepting that the user can create, read, update, or delete any",
+      "Model access controls should enforce record ownership rather than",
+      "Implement access control mechanisms once and re-use them throughout",
       "Preventing injection requires keeping data separate from commands and queries:"
     ],
     "correctIndex": 3,
@@ -603,12 +603,12 @@
     "vulnerabilitySlug": "a04-2021-insecure-design",
     "question": "Which of the following is a recommended prevention for A04:2021 - Insecure Design?",
     "options": [
+      "the application, including minimizing Cross-Origin Resource Sharing (CORS) usage.",
+      "accepting that the user can create, read, update, or delete any",
       "Establish and use a secure development lifecycle with AppSec",
-      "server-less API, where the attacker cannot modify the access control",
-      "Unique application business limit requirements should be enforced by",
-      "Disable web server directory listing and ensure file metadata (e.g.,"
+      "Model access controls should enforce record ownership rather than"
     ],
-    "correctIndex": 0,
+    "correctIndex": 2,
     "explanation": "This prevention measure comes from the A04:2021 guidelines."
   },
   {
@@ -619,12 +619,12 @@
     "vulnerabilitySlug": "a05-2021-security-misconfiguration",
     "question": "Which of the following is a recommended prevention for A05:2021 - Security Misconfiguration?",
     "options": [
-      "Except for public resources, deny by default.",
-      "Implement access control mechanisms once and re-use them throughout",
       "Secure installation processes should be implemented, including:",
-      "server-less API, where the attacker cannot modify the access control"
+      "server-less API, where the attacker cannot modify the access control",
+      "the application, including minimizing Cross-Origin Resource Sharing (CORS) usage.",
+      "Model access controls should enforce record ownership rather than"
     ],
-    "correctIndex": 2,
+    "correctIndex": 0,
     "explanation": "This prevention measure comes from the A05:2021 guidelines."
   },
   {
@@ -635,12 +635,12 @@
     "vulnerabilitySlug": "a06-2021-vulnerable-and-outdated-components",
     "question": "Which of the following is a recommended prevention for A06:2021 - Vulnerable and Outdated Components?",
     "options": [
+      "accepting that the user can create, read, update, or delete any",
+      "Unique application business limit requirements should be enforced by",
       "There should be a patch management process in place to:",
-      "Disable web server directory listing and ensure file metadata (e.g.,",
-      "the application, including minimizing Cross-Origin Resource Sharing (CORS) usage.",
-      "Unique application business limit requirements should be enforced by"
+      "Access control is only effective in trusted server-side code or"
     ],
-    "correctIndex": 0,
+    "correctIndex": 2,
     "explanation": "This prevention measure comes from the A06:2021 guidelines."
   },
   {
@@ -651,12 +651,12 @@
     "vulnerabilitySlug": "a07-2021-identification-and-authentication-failures",
     "question": "Which of the following is a recommended prevention for A07:2021 - Identification and Authentication Failures?",
     "options": [
-      ".git) and backup files are not present within web roots.",
-      "Where possible, implement multi-factor authentication to prevent",
+      "the application, including minimizing Cross-Origin Resource Sharing (CORS) usage.",
       "Access control is only effective in trusted server-side code or",
-      "the application, including minimizing Cross-Origin Resource Sharing (CORS) usage."
+      ".git) and backup files are not present within web roots.",
+      "Where possible, implement multi-factor authentication to prevent"
     ],
-    "correctIndex": 1,
+    "correctIndex": 3,
     "explanation": "This prevention measure comes from the A07:2021 guidelines."
   },
   {
@@ -667,12 +667,12 @@
     "vulnerabilitySlug": "a08-2021-software-and-data-integrity-failures",
     "question": "Which of the following is a recommended prevention for A08:2021 - Software and Data Integrity Failures?",
     "options": [
-      "server-less API, where the attacker cannot modify the access control",
-      ".git) and backup files are not present within web roots.",
+      "Disable web server directory listing and ensure file metadata (e.g.,",
       "Use digital signatures or similar mechanisms to verify the software or data is from the expected sou",
-      "Disable web server directory listing and ensure file metadata (e.g.,"
+      "Model access controls should enforce record ownership rather than",
+      "accepting that the user can create, read, update, or delete any"
     ],
-    "correctIndex": 2,
+    "correctIndex": 1,
     "explanation": "This prevention measure comes from the A08:2021 guidelines."
   },
   {
@@ -684,8 +684,8 @@
     "question": "Which of the following is a recommended prevention for A09:2021 - Security Logging and Monitoring Failures?",
     "options": [
       "Access control is only effective in trusted server-side code or",
-      "Unique application business limit requirements should be enforced by",
       "Model access controls should enforce record ownership rather than",
+      "accepting that the user can create, read, update, or delete any",
       "Developers should implement some or all the following controls,"
     ],
     "correctIndex": 3,
@@ -699,12 +699,12 @@
     "vulnerabilitySlug": "a10-2021-server-side-request-forgery-ssrf",
     "question": "Which of the following is a recommended prevention for A10:2021 - Server-Side Request Forgery (SSRF)?",
     "options": [
+      ".git) and backup files are not present within web roots.",
       "Developers can prevent SSRF by implementing some or all the following",
-      "server-less API, where the attacker cannot modify the access control",
-      "Access control is only effective in trusted server-side code or",
-      "Except for public resources, deny by default."
+      "Implement access control mechanisms once and re-use them throughout",
+      "accepting that the user can create, read, update, or delete any"
     ],
-    "correctIndex": 0,
+    "correctIndex": 1,
     "explanation": "This prevention measure comes from the A10:2021 guidelines."
   },
   {
@@ -715,12 +715,12 @@
     "vulnerabilitySlug": "a01-2021-broken-access-control",
     "question": "What vulnerability does this code demonstrate?",
     "options": [
+      "Vulnerable and Outdated Components",
       "Broken Access Control",
-      "Cryptographic Failures",
-      "Insecure Design",
-      "Security Misconfiguration"
+      "Server-Side Request Forgery (SSRF)",
+      "Identification and Authentication Failures"
     ],
-    "correctIndex": 0,
+    "correctIndex": 1,
     "explanation": "This code example demonstrates A01:2021 - Broken Access Control.",
     "codeSnippet": "pstmt.setString(1, request.getParameter(\"acct\"));\n ResultSet results = pstmt.executeQuery( );"
   },
@@ -732,10 +732,10 @@
     "vulnerabilitySlug": "a03-2021-injection",
     "question": "What vulnerability does this code demonstrate?",
     "options": [
-      "Vulnerable and Outdated Components",
-      "Insecure Design",
+      "Security Logging and Monitoring Failures",
+      "Security Misconfiguration",
       "Injection",
-      "Software and Data Integrity Failures"
+      "Identification and Authentication Failures"
     ],
     "correctIndex": 2,
     "explanation": "This code example demonstrates A03:2021 - Injection.",
@@ -749,12 +749,12 @@
     "vulnerabilitySlug": "a10-2021-server-side-request-forgery-ssrf",
     "question": "What vulnerability does this code demonstrate?",
     "options": [
-      "Software and Data Integrity Failures",
       "Server-Side Request Forgery (SSRF)",
-      "Cryptographic Failures",
-      "Injection"
+      "Identification and Authentication Failures",
+      "Broken Access Control",
+      "Cryptographic Failures"
     ],
-    "correctIndex": 1,
+    "correctIndex": 0,
     "explanation": "This code example demonstrates A10:2021 - Server-Side Request Forgery (SSRF).",
     "codeSnippet": "file:///etc/passwd"
   },
@@ -766,9 +766,9 @@
     "vulnerabilitySlug": null,
     "question": "Which 2021 OWASP Top 10 vulnerability has the highest number of mapped CWEs (40)?",
     "options": [
-      "A09:2021 - Security Logging and Monitoring Failures",
-      "A10:2021 - Server-Side Request Forgery (SSRF)",
-      "A08:2021 - Software and Data Integrity Failures",
+      "A06:2021 - Vulnerable and Outdated Components",
+      "A01:2021 - Broken Access Control",
+      "A03:2021 - Injection",
       "A04:2021 - Insecure Design"
     ],
     "correctIndex": 3,
@@ -782,12 +782,12 @@
     "vulnerabilitySlug": "a01-2025-broken-access-control",
     "question": "Which 2025 OWASP Top 10 category best matches this description?\n\n\"Access control enforces policy such that users cannot act outside of their intended permissions. Failures typically lead...\"",
     "options": [
-      "Broken Access Control",
-      "Security Logging & Alerting Failures",
+      "Insecure Design",
       "Mishandling of Exceptional Conditions",
-      "Injection"
+      "Authentication Failures",
+      "Broken Access Control"
     ],
-    "correctIndex": 0,
+    "correctIndex": 3,
     "explanation": "This describes A01:2025 - Broken Access Control."
   },
   {
@@ -798,12 +798,12 @@
     "vulnerabilitySlug": "a02-2025-security-misconfiguration",
     "question": "Which 2025 OWASP Top 10 category best matches this description?\n\n\"Security misconfiguration is when a system, application, or cloud service is set up incorrectly from a security perspect...\"",
     "options": [
-      "Software Supply Chain Failures",
       "Security Misconfiguration",
-      "Broken Access Control",
+      "Insecure Design",
+      "Software or Data Integrity Failures",
       "Mishandling of Exceptional Conditions"
     ],
-    "correctIndex": 1,
+    "correctIndex": 0,
     "explanation": "This describes A02:2025 - Security Misconfiguration."
   },
   {
@@ -814,12 +814,12 @@
     "vulnerabilitySlug": "a03-2025-software-supply-chain-failures",
     "question": "Which 2025 OWASP Top 10 category best matches this description?\n\n\"Software supply chain failures are breakdowns or other compromises in the process of building, distributing, or updating...\"",
     "options": [
+      "Insecure Design",
       "Software Supply Chain Failures",
-      "Security Logging & Alerting Failures",
       "Cryptographic Failures",
       "Broken Access Control"
     ],
-    "correctIndex": 0,
+    "correctIndex": 1,
     "explanation": "This describes A03:2025 - Software Supply Chain Failures."
   },
   {
@@ -830,12 +830,12 @@
     "vulnerabilitySlug": "a04-2025-cryptographic-failures",
     "question": "Which 2025 OWASP Top 10 category best matches this description?\n\n\"Generally speaking, all data in transit should be encrypted at the transport layer (OSI layer 4). Previous hurdles such...\"",
     "options": [
-      "Security Misconfiguration",
-      "Cryptographic Failures",
-      "Authentication Failures",
-      "Injection"
+      "Broken Access Control",
+      "Mishandling of Exceptional Conditions",
+      "Security Logging & Alerting Failures",
+      "Cryptographic Failures"
     ],
-    "correctIndex": 1,
+    "correctIndex": 3,
     "explanation": "This describes A04:2025 - Cryptographic Failures."
   },
   {
@@ -846,12 +846,12 @@
     "vulnerabilitySlug": "a05-2025-injection",
     "question": "Which 2025 OWASP Top 10 category best matches this description?\n\n\"An injection vulnerability is an application flaw that allows untrusted user input to be sent to an interpreter (e.g. a...\"",
     "options": [
+      "Injection",
       "Security Misconfiguration",
       "Cryptographic Failures",
-      "Security Logging & Alerting Failures",
-      "Injection"
+      "Security Logging & Alerting Failures"
     ],
-    "correctIndex": 3,
+    "correctIndex": 0,
     "explanation": "This describes A05:2025 - Injection."
   },
   {
@@ -862,9 +862,9 @@
     "vulnerabilitySlug": "a06-2025-insecure-design",
     "question": "Which 2025 OWASP Top 10 category best matches this description?\n\n\"Insecure design is a broad category representing different weaknesses, expressed as “missing or ineffective control desi...\"",
     "options": [
-      "Security Logging & Alerting Failures",
-      "Software Supply Chain Failures",
       "Injection",
+      "Software Supply Chain Failures",
+      "Authentication Failures",
       "Insecure Design"
     ],
     "correctIndex": 3,
@@ -878,12 +878,12 @@
     "vulnerabilitySlug": "a07-2025-authentication-failures",
     "question": "Which 2025 OWASP Top 10 category best matches this description?\n\n\"When an attacker is able to trick a system into recognizing an invalid or incorrect user as legitimate, this vulnerabili...\"",
     "options": [
+      "Injection",
       "Authentication Failures",
-      "Insecure Design",
-      "Security Logging & Alerting Failures",
-      "Security Misconfiguration"
+      "Cryptographic Failures",
+      "Broken Access Control"
     ],
-    "correctIndex": 0,
+    "correctIndex": 1,
     "explanation": "This describes A07:2025 - Authentication Failures."
   },
   {
@@ -894,9 +894,9 @@
     "vulnerabilitySlug": "a08-2025-software-or-data-integrity-failures",
     "question": "Which 2025 OWASP Top 10 category best matches this description?\n\n\"Software and data integrity failures relate to code and infrastructure that does not protect against invalid or untruste...\"",
     "options": [
+      "Security Misconfiguration",
+      "Mishandling of Exceptional Conditions",
       "Insecure Design",
-      "Security Logging & Alerting Failures",
-      "Authentication Failures",
       "Software or Data Integrity Failures"
     ],
     "correctIndex": 3,
@@ -910,12 +910,12 @@
     "vulnerabilitySlug": "a09-2025-security-logging-alerting-failures",
     "question": "Which 2025 OWASP Top 10 category best matches this description?\n\n\"Without logging and monitoring, attacks and breaches cannot be detected, and without alerting it is very difficult to re...\"",
     "options": [
-      "Injection",
-      "Insecure Design",
-      "Security Logging & Alerting Failures",
-      "Authentication Failures"
+      "Cryptographic Failures",
+      "Security Misconfiguration",
+      "Broken Access Control",
+      "Security Logging & Alerting Failures"
     ],
-    "correctIndex": 2,
+    "correctIndex": 3,
     "explanation": "This describes A09:2025 - Security Logging & Alerting Failures."
   },
   {
@@ -926,10 +926,10 @@
     "vulnerabilitySlug": "a10-2025-mishandling-of-exceptional-conditions",
     "question": "Which 2025 OWASP Top 10 category best matches this description?\n\n\"Mishandling exceptional conditions in software happens when programs fail to prevent, detect, and respond to unusual and...\"",
     "options": [
-      "Security Misconfiguration",
-      "Insecure Design",
+      "Cryptographic Failures",
+      "Software Supply Chain Failures",
       "Mishandling of Exceptional Conditions",
-      "Injection"
+      "Insecure Design"
     ],
     "correctIndex": 2,
     "explanation": "This describes A10:2025 - Mishandling of Exceptional Conditions."
@@ -942,12 +942,12 @@
     "vulnerabilitySlug": "a01-2025-broken-access-control",
     "question": "Which of the following is a recommended prevention for A01:2025 - Broken Access Control?",
     "options": [
-      "Proactively add a central configuration to intercept excessive error messages as a backup.",
-      "Access control is only effective when implemented in trusted server-side code or serverless APIs, wh",
       "Sending security directives to clients, e.g., Security Headers.",
-      "Use identity federation, short-lived credentials, or role-based access mechanisms provided by the un"
+      "An automated process to verify the effectiveness of the configurations and settings in all environme",
+      "Use identity federation, short-lived credentials, or role-based access mechanisms provided by the un",
+      "Access control is only effective when implemented in trusted server-side code or serverless APIs, wh"
     ],
-    "correctIndex": 1,
+    "correctIndex": 3,
     "explanation": "This prevention measure comes from the A01:2025 guidelines."
   },
   {
@@ -958,12 +958,12 @@
     "vulnerabilitySlug": "a02-2025-security-misconfiguration",
     "question": "Which of the following is a recommended prevention for A02:2025 - Security Misconfiguration?",
     "options": [
-      "Model access controls should enforce record ownership rather than allowing users to create, read, up",
-      "Implement rate limits on API and controller access to minimize the harm from automated attack toolin",
-      "Access control is only effective when implemented in trusted server-side code or serverless APIs, wh",
-      "Secure installation processes should be implemented, including:"
+      "Unique application business limit requirements should be enforced by domain models.",
+      "Stateful session identifiers should be invalidated on the server after logout. Stateless JWT tokens ",
+      "Secure installation processes should be implemented, including:",
+      "Except for public resources, deny by default."
     ],
-    "correctIndex": 3,
+    "correctIndex": 2,
     "explanation": "This prevention measure comes from the A02:2025 guidelines."
   },
   {
@@ -974,12 +974,12 @@
     "vulnerabilitySlug": "a03-2025-software-supply-chain-failures",
     "question": "Which of the following is a recommended prevention for A03:2025 - Software Supply Chain Failures?",
     "options": [
-      "Log access control failures, alert admins when appropriate (e.g., repeated failures).",
+      "Use well-established toolkits or patterns that provide simple, declarative access controls.",
+      "Model access controls should enforce record ownership rather than allowing users to create, read, up",
       "There should be a patch management process in place to:",
-      "Stateful session identifiers should be invalidated on the server after logout. Stateless JWT tokens ",
-      "Unique application business limit requirements should be enforced by domain models."
+      "Disable web server directory listing and ensure file metadata (e.g., .git) and backup files are not "
     ],
-    "correctIndex": 1,
+    "correctIndex": 2,
     "explanation": "This prevention measure comes from the A03:2025 guidelines."
   },
   {
@@ -990,12 +990,12 @@
     "vulnerabilitySlug": "a04-2025-cryptographic-failures",
     "question": "Which of the following is a recommended prevention for A04:2025 - Cryptographic Failures?",
     "options": [
-      "Do the following, at a minimum, and consult the references:",
+      "Model access controls should enforce record ownership rather than allowing users to create, read, up",
+      "Disable web server directory listing and ensure file metadata (e.g., .git) and backup files are not ",
       "Stateful session identifiers should be invalidated on the server after logout. Stateless JWT tokens ",
-      "Use well-established toolkits or patterns that provide simple, declarative access controls.",
-      "Implement access control mechanisms once and reuse them throughout the application, including minimi"
+      "Do the following, at a minimum, and consult the references:"
     ],
-    "correctIndex": 0,
+    "correctIndex": 3,
     "explanation": "This prevention measure comes from the A04:2025 guidelines."
   },
   {
@@ -1006,12 +1006,12 @@
     "vulnerabilitySlug": "a05-2025-injection",
     "question": "Which of the following is a recommended prevention for A05:2025 - Injection?",
     "options": [
+      "Stateful session identifiers should be invalidated on the server after logout. Stateless JWT tokens ",
       "The best means to prevent injection requires keeping data separate from commands and queries:",
-      "Unique application business limit requirements should be enforced by domain models.",
-      "Implement access control mechanisms once and reuse them throughout the application, including minimi",
+      "Use well-established toolkits or patterns that provide simple, declarative access controls.",
       "Model access controls should enforce record ownership rather than allowing users to create, read, up"
     ],
-    "correctIndex": 0,
+    "correctIndex": 1,
     "explanation": "This prevention measure comes from the A05:2025 guidelines."
   },
   {
@@ -1022,12 +1022,12 @@
     "vulnerabilitySlug": "a06-2025-insecure-design",
     "question": "Which of the following is a recommended prevention for A06:2025 - Insecure Design?",
     "options": [
-      "Unique application business limit requirements should be enforced by domain models.",
-      "Establish and use a secure development lifecycle with AppSec professionals to help evaluate and desi",
-      "Stateful session identifiers should be invalidated on the server after logout. Stateless JWT tokens ",
-      "Implement rate limits on API and controller access to minimize the harm from automated attack toolin"
+      "Access control is only effective when implemented in trusted server-side code or serverless APIs, wh",
+      "Implement rate limits on API and controller access to minimize the harm from automated attack toolin",
+      "Model access controls should enforce record ownership rather than allowing users to create, read, up",
+      "Establish and use a secure development lifecycle with AppSec professionals to help evaluate and desi"
     ],
-    "correctIndex": 1,
+    "correctIndex": 3,
     "explanation": "This prevention measure comes from the A06:2025 guidelines."
   },
   {
@@ -1038,12 +1038,12 @@
     "vulnerabilitySlug": "a07-2025-authentication-failures",
     "question": "Which of the following is a recommended prevention for A07:2025 - Authentication Failures?",
     "options": [
-      "Access control is only effective when implemented in trusted server-side code or serverless APIs, wh",
+      "Disable web server directory listing and ensure file metadata (e.g., .git) and backup files are not ",
       "Implement access control mechanisms once and reuse them throughout the application, including minimi",
-      "Model access controls should enforce record ownership rather than allowing users to create, read, up",
-      "Where possible, implement and enforce use of multi-factor authentication to prevent automated creden"
+      "Where possible, implement and enforce use of multi-factor authentication to prevent automated creden",
+      "Access control is only effective when implemented in trusted server-side code or serverless APIs, wh"
     ],
-    "correctIndex": 3,
+    "correctIndex": 2,
     "explanation": "This prevention measure comes from the A07:2025 guidelines."
   },
   {
@@ -1054,12 +1054,12 @@
     "vulnerabilitySlug": "a08-2025-software-or-data-integrity-failures",
     "question": "Which of the following is a recommended prevention for A08:2025 - Software or Data Integrity Failures?",
     "options": [
+      "Stateful session identifiers should be invalidated on the server after logout. Stateless JWT tokens ",
       "Except for public resources, deny by default.",
       "Use digital signatures or similar mechanisms to verify the software or data is from the expected sou",
-      "Model access controls should enforce record ownership rather than allowing users to create, read, up",
-      "Implement access control mechanisms once and reuse them throughout the application, including minimi"
+      "Model access controls should enforce record ownership rather than allowing users to create, read, up"
     ],
-    "correctIndex": 1,
+    "correctIndex": 2,
     "explanation": "This prevention measure comes from the A08:2025 guidelines."
   },
   {
@@ -1070,12 +1070,12 @@
     "vulnerabilitySlug": "a09-2025-security-logging-alerting-failures",
     "question": "Which of the following is a recommended prevention for A09:2025 - Security Logging & Alerting Failures?",
     "options": [
-      "Implement access control mechanisms once and reuse them throughout the application, including minimi",
       "Developers should implement some or all the following controls, depending on the risk of the applica",
-      "Implement rate limits on API and controller access to minimize the harm from automated attack toolin",
-      "Stateful session identifiers should be invalidated on the server after logout. Stateless JWT tokens "
+      "Access control is only effective when implemented in trusted server-side code or serverless APIs, wh",
+      "Implement access control mechanisms once and reuse them throughout the application, including minimi",
+      "Model access controls should enforce record ownership rather than allowing users to create, read, up"
     ],
-    "correctIndex": 1,
+    "correctIndex": 0,
     "explanation": "This prevention measure comes from the A09:2025 guidelines."
   },
   {
@@ -1086,12 +1086,12 @@
     "vulnerabilitySlug": "a10-2025-mishandling-of-exceptional-conditions",
     "question": "Which of the following is a recommended prevention for A10:2025 - Mishandling of Exceptional Conditions?",
     "options": [
-      "Access control is only effective when implemented in trusted server-side code or serverless APIs, wh",
-      "In order to handle an exceptional condition properly we must plan for such situations (expect the wo",
-      "Model access controls should enforce record ownership rather than allowing users to create, read, up",
-      "Disable web server directory listing and ensure file metadata (e.g., .git) and backup files are not "
+      "Unique application business limit requirements should be enforced by domain models.",
+      "Implement rate limits on API and controller access to minimize the harm from automated attack toolin",
+      "Disable web server directory listing and ensure file metadata (e.g., .git) and backup files are not ",
+      "In order to handle an exceptional condition properly we must plan for such situations (expect the wo"
     ],
-    "correctIndex": 1,
+    "correctIndex": 3,
     "explanation": "This prevention measure comes from the A10:2025 guidelines."
   },
   {
@@ -1102,12 +1102,12 @@
     "vulnerabilitySlug": "a01-2025-broken-access-control",
     "question": "What vulnerability does this code demonstrate?",
     "options": [
-      "Broken Access Control",
-      "Injection",
       "Cryptographic Failures",
-      "Security Misconfiguration"
+      "Insecure Design",
+      "Security Logging & Alerting Failures",
+      "Broken Access Control"
     ],
-    "correctIndex": 0,
+    "correctIndex": 3,
     "explanation": "This code example demonstrates A01:2025 - Broken Access Control.",
     "codeSnippet": "pstmt.setString(1, request.getParameter(\"acct\"));\nResultSet results = pstmt.executeQuery( );"
   },
@@ -1119,12 +1119,12 @@
     "vulnerabilitySlug": "a03-2025-software-supply-chain-failures",
     "question": "What vulnerability does this code demonstrate?",
     "options": [
+      "Security Misconfiguration",
       "Mishandling of Exceptional Conditions",
-      "Software Supply Chain Failures",
       "Cryptographic Failures",
-      "Authentication Failures"
+      "Software Supply Chain Failures"
     ],
-    "correctIndex": 1,
+    "correctIndex": 3,
     "explanation": "This code example demonstrates A03:2025 - Software Supply Chain Failures.",
     "codeSnippet": "Shai-Hulud"
   },
@@ -1136,9 +1136,9 @@
     "vulnerabilitySlug": "a05-2025-injection",
     "question": "What vulnerability does this code demonstrate?",
     "options": [
-      "Authentication Failures",
-      "Security Misconfiguration",
       "Mishandling of Exceptional Conditions",
+      "Insecure Design",
+      "Broken Access Control",
       "Injection"
     ],
     "correctIndex": 3,
@@ -1153,12 +1153,12 @@
     "vulnerabilitySlug": "a08-2025-software-or-data-integrity-failures",
     "question": "What vulnerability does this code demonstrate?",
     "options": [
-      "Authentication Failures",
-      "Software or Data Integrity Failures",
       "Software Supply Chain Failures",
-      "Mishandling of Exceptional Conditions"
+      "Broken Access Control",
+      "Software or Data Integrity Failures",
+      "Authentication Failures"
     ],
-    "correctIndex": 1,
+    "correctIndex": 2,
     "explanation": "This code example demonstrates A08:2025 - Software or Data Integrity Failures.",
     "codeSnippet": "myCompany.SupportProvider.com"
   },
@@ -1170,12 +1170,12 @@
     "vulnerabilitySlug": null,
     "question": "Which 2025 OWASP Top 10 vulnerability has the highest number of mapped CWEs (40)?",
     "options": [
-      "A01:2025 - Broken Access Control",
-      "A02:2025 - Security Misconfiguration",
       "A10:2025 - Mishandling of Exceptional Conditions",
-      "A03:2025 - Software Supply Chain Failures"
+      "A01:2025 - Broken Access Control",
+      "A09:2025 - Security Logging & Alerting Failures",
+      "A05:2025 - Injection"
     ],
-    "correctIndex": 0,
+    "correctIndex": 1,
     "explanation": "A01:2025 - Broken Access Control has 40 mapped CWEs, the most of any category in the 2025 edition."
   },
   {
