@@ -238,6 +238,230 @@
     "difficulty": "easy"
   },
   {
+    "id": "sd-ds-10",
+    "topicSlug": "data-structures",
+    "question": "An LRU cache achieves O(1) for both get and evict operations by combining which two data structures?",
+    "options": [
+      "Array and Binary Search Tree",
+      "Hash Map and Doubly Linked List",
+      "Skip List and Bloom Filter",
+      "Trie and Priority Queue"
+    ],
+    "correctIndex": 1,
+    "explanation": "An LRU cache uses a hash map for O(1) key lookups and a doubly linked list to track access order. On access, the node is moved to the head; on eviction, the tail (least recently used) is removed. This is the exact approach used by Redis, Memcached, and the Linux page cache.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "sd-ds-11",
+    "topicSlug": "data-structures",
+    "question": "You need to find the top 10 trending hashtags from a stream of 100 million tweets. Which approach is most memory-efficient?",
+    "options": [
+      "Sort the entire stream and take the last 10",
+      "Use a hash map to count all hashtags, then sort",
+      "Maintain a min-heap of size 10",
+      "Use a Bloom filter to track popular hashtags"
+    ],
+    "correctIndex": 2,
+    "explanation": "A min-heap of size K (10) uses O(K) memory. For each element, if its count exceeds the heap minimum, replace it. This is O(n log K) time and O(K) space — far more efficient than sorting the entire dataset.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "sd-ds-12",
+    "topicSlug": "data-structures",
+    "question": "Why does a hash table NOT support range queries efficiently, unlike a B+ Tree?",
+    "options": [
+      "Hash tables use too much memory",
+      "Hash functions destroy key ordering, so there's no way to scan a contiguous range",
+      "Hash tables can only store string keys",
+      "B+ Trees are always faster than hash tables"
+    ],
+    "correctIndex": 1,
+    "explanation": "Hash functions map keys to essentially random bucket positions, destroying any natural ordering. A B+ Tree maintains sorted order in its leaf nodes (linked as a list), enabling efficient range scans like WHERE age BETWEEN 25 AND 35.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "sd-ds-13",
+    "topicSlug": "data-structures",
+    "question": "Which data structure is used by Google's web crawler to avoid re-crawling billions of already-visited URLs with minimal memory?",
+    "options": [
+      "Hash Set",
+      "Trie",
+      "Bloom Filter",
+      "Inverted Index"
+    ],
+    "correctIndex": 2,
+    "explanation": "A Bloom filter can check set membership for billions of URLs using far less memory than a hash set. The small false positive rate (occasionally re-crawling a URL) is acceptable, while the no-false-negatives guarantee ensures no URL is permanently missed.",
+    "difficulty": "easy"
+  },
+  {
+    "id": "sd-ds-14",
+    "topicSlug": "data-structures",
+    "question": "In a B+ Tree with a fan-out of 500, approximately how many disk I/Os are needed to look up a key among 1 billion rows?",
+    "options": [
+      "1-2",
+      "3-4",
+      "10-15",
+      "20-30"
+    ],
+    "correctIndex": 1,
+    "explanation": "With fan-out 500: level 1 = 500, level 2 = 250,000, level 3 = 125,000,000, level 4 = 62.5 billion. So 1 billion rows need about 4 levels, meaning 3-4 disk I/Os to reach any leaf node. This is why B+ Trees are the default index for every major RDBMS.",
+    "difficulty": "hard"
+  },
+  {
+    "id": "sd-ds-15",
+    "topicSlug": "data-structures",
+    "question": "A circular buffer (ring buffer) is commonly used in which system design scenario?",
+    "options": [
+      "Database indexing for range queries",
+      "Network packet buffering and sliding-window rate limiting",
+      "Full-text search engines",
+      "Distributed key routing"
+    ],
+    "correctIndex": 1,
+    "explanation": "Circular buffers are fixed-size arrays that wrap around, making them ideal for streaming data. They're used in network packet buffers, log collection agents, and sliding-window rate limiters where you need a fixed-size window of recent data.",
+    "difficulty": "easy"
+  },
+  {
+    "id": "sd-ds-16",
+    "topicSlug": "data-structures",
+    "question": "RocksDB, CockroachDB, and TiKV all use LSM-trees internally. What is the main cost (trade-off) of LSM-tree write optimization?",
+    "options": [
+      "Higher memory usage for storing all data in RAM",
+      "Write amplification — data is rewritten multiple times during compaction",
+      "Inability to support transactions",
+      "Lack of compression for stored data"
+    ],
+    "correctIndex": 1,
+    "explanation": "LSM-trees achieve fast writes by buffering in memory and flushing sequentially. However, background compaction must repeatedly read and rewrite SSTables to merge them, causing write amplification — the same data may be written to disk 10-30x its original size.",
+    "difficulty": "hard"
+  },
+  {
+    "id": "sd-ds-17",
+    "topicSlug": "data-structures",
+    "question": "Which data structure would you use to efficiently check user permissions when permissions are represented as a bitmask (e.g., read=1, write=2, admin=4)?",
+    "options": [
+      "Bloom Filter",
+      "Bitmap / Bitmask with bitwise AND",
+      "Hash Map of permission strings",
+      "B+ Tree index"
+    ],
+    "correctIndex": 1,
+    "explanation": "Bitmask permissions use bitwise AND to check access in O(1). For example, if user_permissions=7 (binary 111) and required=4 (binary 100), then (7 AND 4) = 4, confirming admin access. This is used in Unix file permissions and many authorization systems.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "sd-ds-18",
+    "topicSlug": "data-structures",
+    "question": "Java's ConcurrentSkipListMap is preferred over ConcurrentHashMap in which scenario?",
+    "options": [
+      "When you only need O(1) lookups by exact key",
+      "When you need sorted iteration and range queries with concurrent access",
+      "When memory efficiency is the top priority",
+      "When keys are always integers"
+    ],
+    "correctIndex": 1,
+    "explanation": "ConcurrentSkipListMap maintains keys in sorted order, enabling range queries and sorted iteration while supporting lock-free concurrent access. ConcurrentHashMap is faster for exact lookups but doesn't maintain order.",
+    "difficulty": "hard"
+  },
+  {
+    "id": "sd-ds-19",
+    "topicSlug": "data-structures",
+    "question": "You're designing a job scheduler that needs to always execute the next-due job first. Which data structure should back the job queue?",
+    "options": [
+      "FIFO Queue",
+      "Stack (LIFO)",
+      "Min-Heap (Priority Queue) keyed by execution time",
+      "Hash Map of job IDs"
+    ],
+    "correctIndex": 2,
+    "explanation": "A min-heap keyed by execution timestamp gives O(1) peek at the next-due job and O(log n) insert/remove. This is how cron-like schedulers, delayed message queues, and timer wheels work in production systems.",
+    "difficulty": "easy"
+  },
+  {
+    "id": "sd-ds-20",
+    "topicSlug": "data-structures",
+    "question": "How does a Radix Tree (compressed trie) differ from a standard Trie, and where is it commonly used?",
+    "options": [
+      "It stores values only in leaf nodes and is used in B+ Trees",
+      "It merges single-child chains into single nodes, reducing memory, and is used in HTTP routers like nginx",
+      "It uses probabilistic hashing and is used in Bloom filters",
+      "It is a balanced binary tree used in Red-Black Tree implementations"
+    ],
+    "correctIndex": 1,
+    "explanation": "A Radix Tree compresses chains of nodes with single children into one node (e.g., 'a'->'p'->'p' becomes 'app'). This saves significant memory. It's used by Go's httprouter, Rust's actix-web, and nginx for URL path matching.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "sd-ds-21",
+    "topicSlug": "data-structures",
+    "question": "Facebook's TAO system and Neo4j both use graph data structures. What key advantage do graphs have over relational joins for traversal queries?",
+    "options": [
+      "Graphs use less disk space than relational tables",
+      "Graph traversals are O(log n) per hop vs. exponential cost for recursive SQL joins",
+      "Graphs don't require any indexes",
+      "Graphs are always faster than SQL for all query types"
+    ],
+    "correctIndex": 1,
+    "explanation": "Multi-hop graph traversals (e.g., 'friends of friends of friends') operate at O(log n) per hop by following direct pointers between nodes. SQL recursive joins become exponentially expensive as depth increases because each level requires scanning and joining entire tables.",
+    "difficulty": "hard"
+  },
+  {
+    "id": "sd-ds-22",
+    "topicSlug": "data-structures",
+    "question": "Which combination of data structures would you use to build a real-time leaderboard that supports: add score, get rank, and get top-K players?",
+    "options": [
+      "Hash Map + sorted array",
+      "Redis Sorted Set (Skip List + Hash Map internally)",
+      "B+ Tree + Bloom Filter",
+      "Inverted Index + Priority Queue"
+    ],
+    "correctIndex": 1,
+    "explanation": "Redis Sorted Sets (ZSET) internally combine a skip list (for sorted order, rank lookups, and range queries) with a hash map (for O(1) score lookups by member). ZADD, ZRANK, and ZREVRANGE all run in O(log n), making it the standard choice for gaming leaderboards.",
+    "difficulty": "medium"
+  },
+  {
+    "id": "sd-ds-23",
+    "topicSlug": "data-structures",
+    "question": "In ClickHouse and Apache Druid, bitmap indexes are used for analytical queries. Why are they particularly effective for low-cardinality columns?",
+    "options": [
+      "Because bitmap indexes compress better than B+ Trees for any data",
+      "Because with few distinct values, each bitmap is dense (mostly 1s), enabling fast bitwise AND/OR to combine multiple filter conditions",
+      "Because bitmap indexes don't require any storage space",
+      "Because low-cardinality columns are always small"
+    ],
+    "correctIndex": 1,
+    "explanation": "With low cardinality (e.g., status: active/inactive), each bitmap has many set bits and compresses well. Combining conditions like 'active AND US AND premium' is just three bitwise AND operations — massively faster than scanning rows. This is why OLAP databases prefer bitmaps for dimension columns.",
+    "difficulty": "hard"
+  },
+  {
+    "id": "sd-ds-24",
+    "topicSlug": "data-structures",
+    "question": "When a hash table's load factor exceeds 0.75, what happens and why?",
+    "options": [
+      "The hash table starts rejecting new inserts",
+      "The table doubles in size and rehashes all keys to reduce collisions",
+      "The table switches to a B+ Tree internally",
+      "The hash function automatically changes to reduce collisions"
+    ],
+    "correctIndex": 1,
+    "explanation": "When load factor exceeds ~0.75, collision chains get long, degrading O(1) performance toward O(n). The table allocates a new array (typically 2x size), rehashes every key into the new array, and frees the old one. This is O(n) but amortized O(1) per insert over time.",
+    "difficulty": "easy"
+  },
+  {
+    "id": "sd-ds-25",
+    "topicSlug": "data-structures",
+    "question": "You need to count approximately 10 billion unique ad impressions per campaign. Exact counts aren't needed. Using a HashSet would require ~80 GB of RAM. What structure reduces this to ~12 KB?",
+    "options": [
+      "Bloom Filter",
+      "Bitmap Index",
+      "HyperLogLog",
+      "Counting Sort"
+    ],
+    "correctIndex": 2,
+    "explanation": "HyperLogLog estimates cardinality (distinct count) using only ~12 KB of fixed memory regardless of the input size, with ~0.81% standard error. It's the standard solution when approximate unique counts are acceptable — used by Redis (PFADD/PFCOUNT), Google Analytics, and ad-tech platforms.",
+    "difficulty": "medium"
+  },
+  {
     "id": "sd-db-01",
     "topicSlug": "db-design",
     "question": "Which database type is best suited for social graph queries and fraud detection?",
