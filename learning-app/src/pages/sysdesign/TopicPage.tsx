@@ -3,9 +3,11 @@ import { useParams, Link } from 'react-router-dom';
 import { useSysDesignTopic, useSysDesignTopics } from '../../hooks/useSysDesignData';
 import TopicStatusToggle from '../../components/shared/TopicStatusToggle';
 import MermaidDiagram from '../../components/shared/MermaidDiagram';
+import TextToSpeechButton from '../../components/shared/TextToSpeechButton';
 
 function SectionContent({ section }: { section: { id: string; title: string; contentHtml: string; mermaidDiagrams: string[] } }) {
   const ref = useRef<HTMLElement>(null);
+  const headingRef = useRef<HTMLHeadingElement>(null);
 
   useEffect(() => {
     const el = ref.current;
@@ -15,7 +17,10 @@ function SectionContent({ section }: { section: { id: string; title: string; con
 
   return (
     <section ref={ref} id={section.id} className="mb-10">
-      <h2 className="text-xl font-bold mb-4 dark:text-slate-100 text-slate-900">{section.title}</h2>
+      <div className="flex items-center gap-2 mb-4">
+        <h2 ref={headingRef} className="text-xl font-bold dark:text-slate-100 text-slate-900">{section.title}</h2>
+        <TextToSpeechButton contentRef={headingRef} />
+      </div>
       <div className="sysdesign-content dark:text-slate-300 text-slate-600" dangerouslySetInnerHTML={{ __html: section.contentHtml }} />
       {section.mermaidDiagrams.map((diagram, i) => (
         <MermaidDiagram key={`${section.id}-diagram-${i}`} chart={diagram} />
