@@ -51,7 +51,7 @@ export default function TextToSpeechButton({ contentRef }: { contentRef: React.R
   return (
     <button
       onClick={toggle}
-      className={`ml-auto shrink-0 p-1.5 rounded-lg transition-colors ${
+      className={`shrink-0 p-1.5 rounded-lg transition-colors ${
         speaking
           ? 'text-blue-500 dark:bg-blue-500/10 bg-blue-50'
           : 'dark:text-slate-500 text-slate-400 dark:hover:bg-slate-800 hover:bg-slate-100'

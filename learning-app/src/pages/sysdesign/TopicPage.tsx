@@ -17,7 +17,7 @@ function SectionContent({ section }: { section: { id: string; title: string; con
 
   return (
     <section ref={ref} id={section.id} className="mb-10">
-      <div className="flex items-center gap-2 mb-4">
+      <div className="flex items-center justify-between mb-4">
         <h2 ref={headingRef} className="text-xl font-bold dark:text-slate-100 text-slate-900">{section.title}</h2>
         <TextToSpeechButton contentRef={headingRef} />
       </div>
